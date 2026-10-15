@@ -19,17 +19,35 @@ Preview artifact (Claude): https://claude.ai/artifact/SymUDGcwCajvjDa71KvuWt
 | `.github/workflows/pages.yml` | Deploys the repo root to GitHub Pages on every push to `main`. |
 | `.nojekyll` | Tells Pages not to run Jekyll. |
 | `README.md` | Public description, run and deploy notes. |
+| `assets/favicon.svg` | Favicon: the nav logo mark with literal colours. |
+| `assets/favicon-32.png`, `assets/apple-touch-icon.png` | PNG icons for browsers that ignore SVG favicons (Safari, older ones) and for iOS home screens. Rendered from `assets/icon.html`. |
+| `assets/og-image.png` | 1200×630 Open Graph / Twitter card image. Rendered from `assets/og-image.html`, a still of the hero's particle pumpkin drawn on a canvas. |
 
 No build step, no dependencies to install. Open `index.html` in a browser or run `npx serve .`.
 
-## Immediate next step (blocked on a settings click)
+## Deployment (live since 2026-10-15)
 
-The Pages workflow ran once and failed at "Configure Pages" because the Actions token can't enable Pages on its own.
+Pages is enabled with **Source: GitHub Actions** (created through the REST API with `build_type: workflow`, because the first workflow run could not enable it itself) and HTTPS is enforced. Every push to `main` redeploys. https://notnizar.github.io/pumpkin-website/ is live.
 
-1. Go to https://github.com/notnizar/pumpkin-website/settings/pages
-2. Set **Source** to **GitHub Actions**.
-3. Re-run the workflow: Actions tab → "Deploy to GitHub Pages" → "Run workflow", or just push any commit.
-4. Confirm https://notnizar.github.io/pumpkin-website/ loads.
+Gotcha for the future: the account's user site, `notnizar/notnizar.github.io`, used to carry a `CNAME` for `roommates-jo.me`. GitHub redirects every project site under an account to the user site's custom domain, and that domain now points at Vercel, so this site returned a 404 until the CNAME file and the custom domain were removed from the user site. Do not add a custom domain to the user site again unless its DNS points back at GitHub, or this site breaks again.
+
+## Icons and the Open Graph image
+
+`index.html` links `assets/favicon.svg` (primary), `assets/favicon-32.png` (browsers without SVG favicon support) and `assets/apple-touch-icon.png` (iOS), and carries `og:*` / `twitter:*` tags that point at `assets/og-image.png` (1200×630). The `theme-color` meta follows the active theme (`#141210` dark, `#fbf7f1` light); the theme toggle keeps it in sync.
+
+The PNGs are rendered from two source pages with headless Chrome. From the repo root in PowerShell:
+
+```powershell
+$chrome = "C:\Program Files\Google\Chrome\Application\chrome.exe"
+$root = (Get-Location).Path
+$url = "file:///" + $root.Replace('\', '/')
+$opts = "--headless=new", "--disable-gpu", "--hide-scrollbars", "--user-data-dir=$env:TEMP\pk-chrome"
+& $chrome $opts --window-size=1200,630 --virtual-time-budget=10000 --screenshot="$root\assets\og-image.png" "$url/assets/og-image.html"
+& $chrome $opts --window-size=180,180 --virtual-time-budget=3000 --screenshot="$root\assets\apple-touch-icon.png" "$url/assets/icon.html?size=180"
+& $chrome $opts --default-background-color=00000000 --window-size=32,32 --virtual-time-budget=3000 --screenshot="$root\assets\favicon-32.png" "$url/assets/icon.html?size=32&bg=none"
+```
+
+`og-image.html` loads the Google Fonts, so it needs network access; the virtual-time budget lets the fonts arrive before the capture. Edit the headline or sub-line there if the hero copy changes. The `og:image` and `og:url` values are absolute, so they must change if the site moves to a custom domain.
 
 ## Architecture of the page
 
@@ -65,10 +83,9 @@ Rendered in headless Chromium at 1400×900 and 390×844, English and Arabic, lig
 
 - Replace tile art with real campaign images (WebP, lazy-loaded)
 - Wire the form to a backend
-- Add `<meta property="og:*">` tags and a favicon file
 - Optional: a custom domain in Pages settings
 - Optional: a second Three.js moment on the contact section (keep it paused off-screen like the hero)
 
 ## Git conventions used so far
 
-Author: Nizar Zaid <nizar-zaid@4thtechjo.com>. Three commits on `main`. No branches, no PRs.
+Author: Nizar Zaid <nizar-zaid@4thtechjo.com>. Commits go straight to `main`, which is what deploys. No branches, no PRs.

@@ -21,10 +21,12 @@ Bilingual (English / Arabic) marketing site for **Pumpkin Group LLC**, a brandin
 |---|---|
 | `index.html` | Complete standalone page. Served by GitHub Pages. |
 | `artifact.html` | Same page without the `<html>/<head>/<body>` skeleton, for the Claude artifact host. |
+| `assets/` | Favicon (SVG and PNG), Apple touch icon, Open Graph image, and the two HTML sources they are rendered from. |
+| `.github/workflows/pages.yml` | Deploys the repo root to GitHub Pages on every push to `main`. |
 
 ## Run locally
 
-Open `pumpkin-site.html` in any browser, or serve the folder:
+Open `index.html` in any browser, or serve the folder:
 
 ```bash
 npx serve .
@@ -34,7 +36,7 @@ Then visit `http://localhost:3000`.
 
 ## Deploy
 
-Any static host works (GitHub Pages, Netlify, Vercel, Cloudflare Pages). This repo is deployed with GitHub Pages from the `main` branch root.
+Any static host works (GitHub Pages, Netlify, Vercel, Cloudflare Pages). This repo deploys to GitHub Pages through the workflow in `.github/workflows/pages.yml` on every push to `main`.
 
 ## Before sending to the client
 

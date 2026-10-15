@@ -5,6 +5,26 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Pumpkin Group is a full-service branding, marketing, advertising and digital agency in Amman, Jordan. بامبكن جروب وكالة تسويق متكاملة في عمّان.">
 <title>Pumpkin Group</title>
+<meta name="theme-color" content="#141210">
+<link rel="canonical" href="https://notnizar.github.io/pumpkin-website/">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pumpkin Group">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="ar_JO">
+<meta property="og:url" content="https://notnizar.github.io/pumpkin-website/">
+<meta property="og:title" content="Pumpkin Group — Branding, marketing, advertising and digital agency in Amman">
+<meta property="og:description" content="We grow brands people actually remember. Strategy, identity, campaigns and digital under one roof in Khilda, Amman, for brands across Jordan and the region.">
+<meta property="og:image" content="https://notnizar.github.io/pumpkin-website/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Pumpkin Group: We grow brands people actually remember.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pumpkin Group — Branding, marketing, advertising and digital agency in Amman">
+<meta name="twitter:description" content="We grow brands people actually remember. Strategy, identity, campaigns and digital under one roof in Khilda, Amman.">
+<meta name="twitter:image" content="https://notnizar.github.io/pumpkin-website/assets/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Figtree:wght@300..800&family=Cairo:wght@400..800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap">
@@ -608,7 +628,11 @@ footer .big{font-family:var(--font-display);font-size:clamp(64px,16vw,220px);fon
   var themeBtn=document.getElementById('themeBtn');
   try{var saved=localStorage.getItem('pk-theme'); if(saved==='light'||saved==='dark') root.setAttribute('data-theme',saved);}catch(e){}
   function isLight(){ var t=root.getAttribute('data-theme'); if(t) return t==='light'; return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches; }
-  themeBtn.addEventListener('click',function(){ var next=isLight()?'dark':'light'; root.setAttribute('data-theme',next); try{localStorage.setItem('pk-theme',next);}catch(e){} });
+  var themeMeta=document.querySelector('meta[name="theme-color"]');
+  function syncThemeColor(){ if(themeMeta) themeMeta.setAttribute('content', isLight()?'#fbf7f1':'#141210'); }
+  syncThemeColor();
+  try{ window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', syncThemeColor); }catch(e){}
+  themeBtn.addEventListener('click',function(){ var next=isLight()?'dark':'light'; root.setAttribute('data-theme',next); syncThemeColor(); try{localStorage.setItem('pk-theme',next);}catch(e){} });
 
   /* ---------------- nav ---------------- */
   var nav=document.getElementById('nav'), links=document.getElementById('navLinks'), menuBtn=document.getElementById('menuBtn');

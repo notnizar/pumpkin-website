@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pumpkin icon source</title>
+<!-- Source for the PNG icons. Open with ?size=180 (opaque tile) or ?size=32&bg=none (transparent). See HANDOFF.md for the render command. -->
+<style>
+html,body{margin:0;padding:0}
+body{width:180px;height:180px;background:#141210;display:grid;place-items:center;overflow:hidden}
+svg{display:block}
+</style>
+</head>
+<body>
+<svg viewBox="0 0 32 32" aria-hidden="true">
+  <path d="M16 6c1.2-2.4 2.6-3.6 4.4-3.8.4 1.6-.2 3.2-1.6 4.6" fill="none" stroke="#3f9a6e" stroke-width="2.6" stroke-linecap="round"/>
+  <ellipse cx="16" cy="18.5" rx="13.5" ry="11.5" fill="#ff7a1a"/>
+  <path d="M16 7c-2.8 3.2-3.9 7-3.9 11.5s1.1 8.3 3.9 11.5M16 7c2.8 3.2 3.9 7 3.9 11.5s-1.1 8.3-3.9 11.5" fill="none" stroke="#1a0e04" stroke-opacity=".35" stroke-width="1.7"/>
+</svg>
+<script>
+  const q = new URLSearchParams(location.search);
+  const size = parseInt(q.get('size'), 10) || 180;
+  const transparent = q.get('bg') === 'none';
+  document.body.style.width = size + 'px';
+  document.body.style.height = size + 'px';
+  document.body.style.background = transparent ? 'transparent' : '#141210';
+  const svg = document.querySelector('svg');
+  const inner = transparent ? size : Math.round(size * 0.74);
+  svg.setAttribute('width', inner);
+  svg.setAttribute('height', inner);
+</script>
+</body>
+</html>

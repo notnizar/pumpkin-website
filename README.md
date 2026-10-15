@@ -2,7 +2,9 @@
 
 Bilingual (English / Arabic) marketing site for **Pumpkin Group LLC**, a branding, marketing, advertising and digital agency based in Khilda, Amman, Jordan.
 
-**Live preview:** https://claude.ai/artifact/SymUDGcwCajvjDa71KvuWt
+**Live site:** https://notnizar.github.io/pumpkin-website/
+
+**Preview artifact:** https://claude.ai/artifact/SymUDGcwCajvjDa71KvuWt
 
 ## Features
 
@@ -17,8 +19,8 @@ Bilingual (English / Arabic) marketing site for **Pumpkin Group LLC**, a brandin
 
 | File | Purpose |
 |---|---|
-| `pumpkin-site.html` | Complete standalone page. Open in a browser or deploy as-is. |
-| `index.html` | Same page without the `<html>/<head>/<body>` skeleton, for the Claude artifact host. |
+| `index.html` | Complete standalone page. Served by GitHub Pages. |
+| `artifact.html` | Same page without the `<html>/<head>/<body>` skeleton, for the Claude artifact host. |
 
 ## Run locally
 
@@ -28,11 +30,11 @@ Open `pumpkin-site.html` in any browser, or serve the folder:
 npx serve .
 ```
 
-Then visit `http://localhost:3000/pumpkin-site.html`.
+Then visit `http://localhost:3000`.
 
 ## Deploy
 
-Any static host works (GitHub Pages, Netlify, Vercel, Cloudflare Pages). Rename `pumpkin-site.html` to `index.html` at the deploy root, or point the host at it.
+Any static host works (GitHub Pages, Netlify, Vercel, Cloudflare Pages). This repo is deployed with GitHub Pages from the `main` branch root.
 
 ## Before sending to the client
 

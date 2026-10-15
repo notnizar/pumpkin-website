@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Pumpkin Group is a full-service branding, marketing, advertising and digital agency in Amman, Jordan. بامبكن جروب وكالة تسويق متكاملة في عمّان.">
+<title>Pumpkin Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Figtree:wght@300..800&family=Cairo:wght@400..800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap">
+<style>
+/* Layout: dark-first editorial. Hero text in the left 60% with a Three.js particle pumpkin filling the right;
+   one display headline per section; 1200px column; two full-bleed orange bands (marquee + footer word). RTL-ready. */
+:root{
+  --bg:#141210; --bg-2:#1c1915; --bg-3:#26221c; --line:#352f27;
+  --fg:#f4ede3; --fg-2:#b8ad9d; --fg-3:#7d7366;
+  --accent:#ff7a1a; --accent-2:#ffb15c; --accent-ink:#1a0e04; --leaf:#3f9a6e;
+  --font-display:"Bricolage Grotesque","Avenir Next Condensed","Helvetica Neue",Arial,sans-serif;
+  --font-body:"Figtree","Helvetica Neue",Arial,sans-serif;
+  --font-display-ar:"Cairo","Segoe UI","Tahoma",Arial,sans-serif;
+  --font-body-ar:"IBM Plex Sans Arabic","Segoe UI","Tahoma",Arial,sans-serif;
+  --radius:14px; --shadow:0 30px 80px -30px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#fbf7f1; --bg-2:#f3ece2; --bg-3:#ffffff; --line:#e4dacb;
+    --fg:#1d1710; --fg-2:#5c5247; --fg-3:#8c8172;
+    --accent:#f26a00; --accent-2:#ff9a3c; --accent-ink:#1a0e04; --leaf:#2e7d55;
+    --shadow:0 30px 80px -30px rgba(70,40,10,.25); color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#fbf7f1; --bg-2:#f3ece2; --bg-3:#ffffff; --line:#e4dacb;
+  --fg:#1d1710; --fg-2:#5c5247; --fg-3:#8c8172;
+  --accent:#f26a00; --accent-2:#ff9a3c; --accent-ink:#1a0e04; --leaf:#2e7d55;
+  --shadow:0 30px 80px -30px rgba(70,40,10,.25); color-scheme:light;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;line-height:1.02;margin:0;text-wrap:balance;letter-spacing:-.02em}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+/* Arabic typography: no negative tracking, taller lines, Arabic faces */
+[dir="rtl"] body,[dir="rtl"] .btn,[dir="rtl"] input,[dir="rtl"] select,[dir="rtl"] textarea,[dir="rtl"] button{font-family:var(--font-body-ar)}
+[dir="rtl"] h1,[dir="rtl"] h2,[dir="rtl"] h3,[dir="rtl"] h4,[dir="rtl"] .logo,[dir="rtl"] .fact b,[dir="rtl"] .marquee-track span,[dir="rtl"] .step .n,[dir="rtl"] .band blockquote{font-family:var(--font-display-ar);letter-spacing:0}
+[dir="rtl"] h1,[dir="rtl"] h2,[dir="rtl"] h3{line-height:1.22}
+[dir="rtl"] .eyebrow,[dir="rtl"] .tag,[dir="rtl"] .fact span,[dir="rtl"] .service .num,[dir="rtl"] .contact-info .label{letter-spacing:0}
+[dir="rtl"] .hero h1 .o{font-style:normal;font-weight:800}
+[dir="rtl"] .flip{transform:scaleX(-1)}
+
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media (min-width:900px){.wrap{padding-left:max(40px,env(safe-area-inset-left,0px));padding-right:max(40px,env(safe-area-inset-right,0px))}}
+
+.eyebrow{font-family:var(--font-body);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:inline-flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:22px;height:2px;background:var(--accent);border-radius:2px}
+[dir="rtl"] .eyebrow{font-family:var(--font-body-ar);font-size:14px}
+
+section{padding-block:clamp(64px,10vw,140px)}
+.lazy{content-visibility:auto;contain-intrinsic-size:auto 900px}
+.section-head{display:grid;gap:16px;max-width:760px;margin-bottom:clamp(32px,6vw,72px)}
+.section-head h2{font-size:clamp(32px,5.2vw,64px)}
+.section-head p{color:var(--fg-2);font-size:clamp(16px,1.4vw,20px);max-width:60ch}
+
+/* ---------- Nav ---------- */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--bg) 92%,transparent);border-bottom:1px solid transparent;transition:border-color .3s}
+@media (min-width:900px){.nav{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 78%,transparent)}}
+.nav.scrolled{border-bottom-color:var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:22px;letter-spacing:-.02em}
+.logo-mark{width:30px;height:30px;flex:none}
+.nav-links{display:flex;gap:28px;font-size:15px;font-weight:500;color:var(--fg-2)}
+.nav-links a{transition:color .2s}
+.nav-links a:hover{color:var(--fg)}
+.nav-actions{display:flex;align-items:center;gap:8px}
+.icon-btn{height:40px;min-width:40px;border-radius:999px;border:1px solid var(--line);background:var(--bg-2);color:var(--fg);display:inline-grid;place-items:center;cursor:pointer;padding:0 12px;font:inherit;font-size:14px;font-weight:600}
+.icon-btn svg{width:18px;height:18px}
+.icon-btn .moon{display:none}
+:root[data-theme="light"] .icon-btn .sun{display:none}
+:root[data-theme="light"] .icon-btn .moon{display:block}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]) .icon-btn .sun{display:none}
+  :root:not([data-theme="dark"]) .icon-btn .moon{display:block}
+}
+.lang-btn{font-family:var(--font-body-ar),var(--font-body)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:999px;padding:14px 24px;min-height:48px;font-weight:600;font-size:15px;line-height:1;cursor:pointer;border:1px solid transparent;transition:transform .2s,background .2s,color .2s,border-color .2s;white-space:nowrap}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover{background:var(--accent-2)}
+.btn-ghost{border-color:var(--line);color:var(--fg);background:transparent}
+.btn-ghost:hover{border-color:var(--fg-3)}
+.btn svg{width:16px;height:16px}
+.nav .btn{padding:11px 18px;min-height:40px;font-size:14px}
+.menu-btn{display:none}
+@media (max-width:900px){
+  .nav-links{display:none}
+  .nav-links.open{display:flex;position:absolute;top:68px;left:0;right:0;flex-direction:column;gap:0;background:var(--bg-2);border-bottom:1px solid var(--line);padding:8px max(16px,env(safe-area-inset-right,0px)) 16px max(16px,env(safe-area-inset-left,0px))}
+  .nav-links.open a{padding:16px 0;border-bottom:1px solid var(--line);font-size:18px;color:var(--fg)}
+  .nav-links.open a:last-child{border-bottom:none}
+  .menu-btn{display:inline-grid}
+  .nav .btn-primary{display:none}
+}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;padding-block:clamp(40px,8vw,110px) clamp(40px,6vw,90px);overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;display:block}
+.hero .wrap{position:relative;display:grid;gap:clamp(24px,4vw,48px)}
+@media (min-width:1000px){.hero .wrap{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}.hero .wrap>*{grid-column:1}}
+@media (max-width:999px){.hero .wrap{padding-top:clamp(170px,46vw,260px)}}
+.hero-top{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;color:var(--fg-2);font-size:14px}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:7px 14px;background:color-mix(in srgb,var(--bg-2) 80%,transparent)}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:var(--leaf);box-shadow:0 0 0 4px color-mix(in srgb,var(--leaf) 25%,transparent)}
+.hero h1{font-size:clamp(40px,7vw,104px);font-weight:700;line-height:.96;letter-spacing:-.035em;font-variation-settings:"opsz" 96}
+.hero h1 .o{color:var(--accent);font-style:italic;font-weight:500}
+[dir="rtl"] .hero h1{font-size:clamp(36px,6.2vw,92px);line-height:1.18}
+.hero-lede{font-size:clamp(17px,1.6vw,22px);color:var(--fg-2);max-width:48ch}
+.hero-lede strong{color:var(--fg);font-weight:600}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+@media (max-width:520px){.hero-cta .btn{flex:1 1 100%}}
+.hero-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;max-width:640px}
+.fact{background:color-mix(in srgb,var(--bg-2) 92%,transparent);padding:18px 16px;display:grid;gap:4px}
+.fact b{font-family:var(--font-display);font-size:clamp(22px,2.4vw,30px);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.fact span{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-3)}
+@media (max-width:520px){.hero-facts{grid-template-columns:1fr 1fr}.fact:last-child{grid-column:1/-1}}
+
+/* ---------- Marquee ---------- */
+.marquee{background:var(--accent);color:var(--accent-ink);padding-block:16px;overflow:hidden;direction:ltr}
+.marquee-track{display:flex;width:max-content;animation:scroll 40s linear infinite;will-change:transform}
+.marquee:hover .marquee-track{animation-play-state:paused}
+.marquee-track span{font-family:var(--font-display);font-size:clamp(17px,2vw,24px);font-weight:600;letter-spacing:-.01em;padding:0 26px;display:inline-flex;align-items:center;gap:26px;white-space:nowrap}
+.marquee-track span::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--accent-ink);opacity:.6}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+/* ---------- About ---------- */
+.about .wrap{display:grid;gap:clamp(28px,6vw,80px)}
+@media (min-width:900px){.about .wrap{grid-template-columns:1fr 1fr;align-items:start}}
+.about h2{font-size:clamp(32px,4.6vw,58px);margin-top:16px}
+.about-copy{display:grid;gap:20px;color:var(--fg-2);font-size:clamp(16px,1.3vw,19px)}
+.about-copy p strong{color:var(--fg);font-weight:600}
+.belief-list{display:grid;border-top:1px solid var(--line);margin-top:8px}
+.belief{display:grid;grid-template-columns:auto 1fr;gap:16px;padding:20px 0;border-bottom:1px solid var(--line);align-items:start}
+.belief .glyph{width:40px;height:40px;border-radius:10px;background:var(--bg-3);border:1px solid var(--line);display:grid;place-items:center;color:var(--accent);flex:none}
+.belief .glyph svg{width:18px;height:18px}
+.belief h3{font-size:18px;font-weight:600;margin-bottom:6px;font-family:var(--font-body);letter-spacing:0}
+[dir="rtl"] .belief h3{font-family:var(--font-body-ar)}
+.belief p{color:var(--fg-2);font-size:15px}
+
+/* ---------- Services ---------- */
+.services{background:var(--bg-2);border-block:1px solid var(--line)}
+.service-grid{display:grid;gap:12px}
+@media (min-width:700px){.service-grid{grid-template-columns:1fr 1fr}}
+@media (min-width:1050px){.service-grid{grid-template-columns:repeat(4,1fr)}}
+.service{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:24px 22px;display:grid;gap:16px;grid-template-rows:auto auto 1fr auto;position:relative;overflow:hidden;transition:transform .3s,border-color .3s}
+@media (min-width:1050px){.service{min-height:360px;padding:28px 26px}}
+.service:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
+.service::after{content:"";position:absolute;bottom:-40px;inset-inline-end:-40px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 30%,transparent),transparent 70%);opacity:0;transition:opacity .3s}
+.service:hover::after{opacity:1}
+.service .num{font-family:var(--font-display);font-size:13px;letter-spacing:.1em;color:var(--fg-3)}
+.service h3{font-size:clamp(22px,2vw,30px);font-weight:600}
+.service p{color:var(--fg-2);font-size:15px}
+.service ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:14px;color:var(--fg-2)}
+.service li{display:flex;gap:10px;align-items:center}
+.service li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--accent);flex:none}
+
+/* ---------- Process ---------- */
+.steps{display:grid;border-top:1px solid var(--line)}
+.step{display:grid;grid-template-columns:56px 1fr;gap:12px 16px;padding:24px 0;border-bottom:1px solid var(--line);align-items:baseline}
+@media (min-width:800px){.step{grid-template-columns:120px 1fr 1.4fr;gap:32px;padding:28px 0}}
+.step .n{font-family:var(--font-display);font-size:clamp(26px,3vw,40px);font-weight:300;color:var(--accent);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.step h3{font-size:clamp(21px,2vw,28px);font-weight:600}
+.step p{color:var(--fg-2);font-size:15px}
+@media (max-width:799px){.step p{grid-column:2}}
+
+/* ---------- Work ---------- */
+.work-grid{display:grid;gap:14px}
+@media (min-width:700px){.work-grid{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1050px){.work-grid{grid-template-columns:repeat(3,1fr)}}
+/* phone: a swipeable, snapping row instead of six stacked tall tiles */
+@media (max-width:699px){
+  .work-scroller{margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px))) calc(-1 * max(16px,env(safe-area-inset-right,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .work-scroller::-webkit-scrollbar{display:none}
+  .work-grid{display:flex;gap:12px}
+  .tile{flex:0 0 min(78vw,320px);scroll-snap-align:start}
+  .swipe-hint{display:flex}
+}
+.swipe-hint{display:none;align-items:center;gap:8px;font-size:13px;color:var(--fg-3);margin-top:14px}
+.swipe-hint svg{width:14px;height:14px}
+.tile{position:relative;border-radius:var(--radius);overflow:hidden;aspect-ratio:4/5;max-width:100%;background:var(--bg-3);border:1px solid var(--line);display:flex;flex-direction:column;justify-content:flex-end;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.tile:hover{transform:translateY(-6px)}
+.tile .art{position:absolute;inset:0;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.tile:hover .art{transform:scale(1.04)}
+.tile .meta{position:relative;padding:20px;display:grid;gap:6px;background:linear-gradient(to top,color-mix(in srgb,var(--bg) 92%,transparent) 60%,transparent)}
+.tile .tag{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-2);font-weight:600}
+.tile h3{font-size:clamp(21px,2vw,28px);font-weight:600}
+.tile .meta p{color:var(--fg-2);font-size:14px}
+.tile .arrow{position:absolute;top:16px;inset-inline-end:16px;width:40px;height:40px;border-radius:50%;background:color-mix(in srgb,var(--bg) 70%,transparent);border:1px solid var(--line);display:grid;place-items:center;color:var(--fg)}
+.tile .arrow svg{width:16px;height:16px}
+.art-1{background:radial-gradient(circle at 30% 30%,var(--accent) 0 18%,transparent 19%),radial-gradient(circle at 70% 65%,var(--accent-2) 0 26%,transparent 27%),linear-gradient(135deg,#2b1a0c,#4a2810)}
+.art-2{background:repeating-linear-gradient(90deg,transparent 0 22px,color-mix(in srgb,var(--accent) 35%,transparent) 22px 24px),linear-gradient(180deg,#0f2a21,#16423a)}
+.art-3{background:conic-gradient(from 200deg at 60% 40%,var(--accent) 0 90deg,transparent 90deg 360deg),linear-gradient(160deg,#3a0f2e,#1b0a17)}
+.art-4{background:radial-gradient(ellipse at 50% 110%,var(--accent-2) 0 35%,transparent 36%),radial-gradient(ellipse at 50% 120%,var(--accent) 0 50%,transparent 51%),linear-gradient(180deg,#11131f,#1e2238)}
+.art-5{background:linear-gradient(45deg,transparent 48%,var(--accent) 48% 52%,transparent 52%),linear-gradient(-45deg,transparent 48%,var(--accent-2) 48% 52%,transparent 52%),linear-gradient(180deg,#2a2a14,#3c3a1c)}
+.art-6{background:radial-gradient(circle at 20% 80%,var(--leaf) 0 22%,transparent 23%),radial-gradient(circle at 80% 20%,var(--accent) 0 30%,transparent 31%),linear-gradient(180deg,#1a1410,#2b201a)}
+.work-note{margin-top:16px;font-size:13px;color:var(--fg-3)}
+
+/* ---------- Band ---------- */
+.band{background:var(--bg-2);border-block:1px solid var(--line)}
+.band .wrap{display:grid;gap:32px}
+@media (min-width:900px){.band .wrap{grid-template-columns:1fr 1fr;align-items:center}}
+.band h2{font-size:clamp(30px,4.2vw,54px);margin-top:16px}
+.band blockquote{margin:0;font-family:var(--font-display);font-size:clamp(21px,2.4vw,32px);font-weight:400;line-height:1.3;letter-spacing:-.015em;color:var(--fg)}
+.band blockquote em{color:var(--accent);font-style:italic}
+[dir="rtl"] .band blockquote em{font-style:normal;font-weight:700}
+.band .who{margin-top:16px;color:var(--fg-3);font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:14px;color:var(--fg-2);background:var(--bg)}
+
+/* ---------- Contact ---------- */
+.contact .wrap{display:grid;gap:clamp(32px,6vw,80px)}
+@media (min-width:960px){.contact .wrap{grid-template-columns:1fr 1fr}}
+.contact h2{font-size:clamp(36px,6vw,84px);line-height:.98;margin-top:16px}
+[dir="rtl"] .contact h2{line-height:1.2}
+.contact h2 .o{color:var(--accent)}
+.contact-info{display:grid;gap:22px;color:var(--fg-2);margin-top:32px}
+.contact-info .row{display:grid;gap:6px}
+.contact-info .label{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3);font-weight:600}
+.contact-info .val{font-size:17px;color:var(--fg);display:flex;align-items:center;gap:12px;flex-wrap:wrap;word-break:break-word}
+.copy{border:1px solid var(--line);background:var(--bg-2);color:var(--fg-2);border-radius:999px;padding:6px 12px;min-height:32px;font:inherit;font-size:13px;cursor:pointer}
+.copy:hover{color:var(--fg);border-color:var(--fg-3)}
+.socials{display:flex;gap:8px;flex-wrap:wrap}
+.socials a{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:10px 16px;min-height:44px;font-size:14px;color:var(--fg);background:var(--bg-2);transition:border-color .2s,transform .2s}
+.socials a:hover{border-color:var(--accent);transform:translateY(-2px)}
+.socials svg{width:16px;height:16px}
+.form{background:var(--bg-2);border:1px solid var(--line);border-radius:20px;padding:clamp(18px,3vw,36px);display:grid;gap:14px;box-shadow:var(--shadow)}
+.form .two{display:grid;gap:14px}
+@media (min-width:560px){.form .two{grid-template-columns:1fr 1fr}}
+.field{display:grid;gap:8px}
+.field label,.field .lbl{font-size:13px;font-weight:600;color:var(--fg-2)}
+.field input,.field select,.field textarea{width:100%;background:var(--bg-3);border:1px solid var(--line);border-radius:10px;color:var(--fg);padding:13px 14px;min-height:48px;font:inherit;font-size:16px;transition:border-color .2s;min-width:0}
+.field textarea{min-height:120px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent)}
+.field .invalid{border-color:var(--accent)}
+.budget{display:flex;flex-wrap:wrap;gap:8px}
+.budget input{position:absolute;opacity:0;width:0;height:0}
+.budget label{border:1px solid var(--line);border-radius:999px;padding:9px 14px;min-height:40px;display:inline-flex;align-items:center;font-size:14px;cursor:pointer;color:var(--fg-2);background:var(--bg-3);transition:all .2s}
+.budget input:checked+label{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.budget input:focus-visible+label{outline:2px solid var(--accent);outline-offset:2px}
+.form .btn{width:100%;padding:16px}
+.form-note{font-size:13px;color:var(--fg-3);text-align:center}
+.success{display:grid;gap:12px;text-align:center;padding:32px 10px}
+.success .check{width:64px;height:64px;border-radius:50%;background:color-mix(in srgb,var(--leaf) 20%,transparent);color:var(--leaf);display:grid;place-items:center;margin:0 auto}
+.success .check svg{width:28px;height:28px}
+.success h3{font-size:26px}
+.success p{color:var(--fg-2)}
+.success .btn{width:auto;margin:8px auto 0}
+
+/* ---------- Footer ---------- */
+footer{border-top:1px solid var(--line);padding-block:36px 0;color:var(--fg-3);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 20px;justify-content:space-between;align-items:center}
+footer .big{font-family:var(--font-display);font-size:clamp(64px,16vw,220px);font-weight:700;letter-spacing:-.04em;line-height:.8;color:var(--fg);opacity:.08;text-align:center;margin-top:28px;user-select:none;overflow:hidden;padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+@media (min-width:900px){footer .big{padding-bottom:0}}
+
+/* ---------- Phone-only sticky CTA ---------- */
+.sticky-cta{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:color-mix(in srgb,var(--bg) 94%,transparent);border-top:1px solid var(--line);transform:translateY(0);transition:transform .3s}
+.sticky-cta.away{transform:translateY(110%)}
+.sticky-cta .btn{width:100%}
+@media (max-width:899px){.sticky-cta{display:block}}
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Pumpkin Group home">
+      <svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M16 6c1.2-2.4 2.6-3.6 4.4-3.8.4 1.6-.2 3.2-1.6 4.6" fill="none" stroke="var(--leaf)" stroke-width="2.4" stroke-linecap="round"/>
+        <ellipse cx="16" cy="18" rx="12.5" ry="10.5" fill="var(--accent)"/>
+        <path d="M16 7.5c-2.6 3-3.6 6.6-3.6 10.5s1 7.5 3.6 10.5M16 7.5c2.6 3 3.6 6.6 3.6 10.5s-1 7.5-3.6 10.5" fill="none" stroke="var(--accent-ink)" stroke-opacity=".35" stroke-width="1.6"/>
+      </svg>
+      Pumpkin
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="Primary">
+      <a href="#about" data-i18n="nav.about">About</a>
+      <a href="#services" data-i18n="nav.services">Services</a>
+      <a href="#process" data-i18n="nav.process">Process</a>
+      <a href="#work" data-i18n="nav.work">Work</a>
+      <a href="#contact" data-i18n="nav.contact">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn lang-btn" id="langBtn" type="button" aria-label="Switch language">عربي</button>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle light and dark theme">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <a class="btn btn-primary" href="#contact" data-i18n="nav.cta">Start a project</a>
+      <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks" data-i18n="nav.menu">Menu</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="hero-top">
+      <span class="pill"><span class="dot"></span><span data-i18n="hero.pill">Taking new clients for Q1 2027</span></span>
+      <span data-i18n="hero.sub">Branding · Marketing · Advertising · Digital — Amman, Jordan</span>
+    </div>
+    <h1 data-i18n="hero.h1">We grow brands people <span class="o">actually</span> remember.</h1>
+    <div>
+      <p class="hero-lede" data-i18n="hero.lede">Pumpkin is a full-service marketing agency based in Amman. <strong>Strategy, identity, campaigns and digital</strong> under one roof, built for brands across Jordan and the wider region that want to stand out and stay there.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#contact"><span data-i18n="hero.cta1">Start a project</span>
+          <svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn-ghost" href="#work" data-i18n="hero.cta2">See our work</a>
+      </div>
+    </div>
+    <div class="hero-facts" role="list">
+      <div class="fact" role="listitem"><b>2020</b><span data-i18n="fact.1">Founded</span></div>
+      <div class="fact" role="listitem"><b data-i18n="fact.2b">Amman</b><span data-i18n="fact.2">Khilda, Jordan</span></div>
+      <div class="fact" role="listitem"><b>4</b><span data-i18n="fact.3">Disciplines, one team</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track" id="marquee">
+    <span data-i18n="mq.1">Brand Strategy</span><span data-i18n="mq.2">Visual Identity</span><span data-i18n="mq.3">Social Media</span><span data-i18n="mq.4">Campaigns</span><span data-i18n="mq.5">Media Buying</span><span data-i18n="mq.6">Content Production</span><span data-i18n="mq.7">Web &amp; Apps</span><span data-i18n="mq.8">Performance Marketing</span><span data-i18n="mq.9">Packaging</span><span data-i18n="mq.10">Launch Events</span>
+  </div>
+</div>
+
+<!-- ============ ABOUT ============ -->
+<section class="about lazy" id="about">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow" data-i18n="about.eyebrow">Who we are</span>
+      <h2 data-i18n="about.h2">A small team with a big appetite for brands that mean something.</h2>
+    </div>
+    <div class="about-copy">
+      <p data-i18n="about.p1">Pumpkin Group started in Amman in 2020 with a simple idea: a brand should feel the same on a billboard on Mecca Street as it does in a 15-second reel. <strong>Most agencies split that work across departments. We keep it in one room.</strong></p>
+      <p data-i18n="about.p2">Strategists, designers, writers and media planners work on every account together, so the thinking that shapes a logo also shapes the launch campaign, the Instagram grid and the landing page.</p>
+      <div class="belief-list">
+        <div class="belief">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+          <div><h3 data-i18n="b1.h">Strategy before pixels</h3><p data-i18n="b1.p">Every engagement starts with the business question, not the deliverable. We find out what needs to change before we decide what to make.</p></div>
+        </div>
+        <div class="belief">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l16-16M4 4h16v16"/></svg></div>
+          <div><h3 data-i18n="b2.h">Bilingual by default</h3><p data-i18n="b2.p">Arabic and English are designed together from day one, so nothing reads like a translation.</p></div>
+        </div>
+        <div class="belief">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M14 7h7v7"/></svg></div>
+          <div><h3 data-i18n="b3.h">Measured, not guessed</h3><p data-i18n="b3.p">We report on reach, engagement, cost per result and sales lift. If a channel isn't working, we say so and move the budget.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section class="services lazy" id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="sv.eyebrow">What we do</span>
+      <h2 data-i18n="sv.h2">Four disciplines. One point of view.</h2>
+      <p data-i18n="sv.p">Hire us for a single piece or the whole journey. Either way, the same team carries the idea from the first brief to the last post.</p>
+    </div>
+    <div class="service-grid">
+      <article class="service">
+        <span class="num" data-i18n="s1.num">BRANDING</span>
+        <h3 data-i18n="s1.h">Identity that holds up everywhere</h3>
+        <p data-i18n="s1.p">Naming, positioning, logo systems, typography and brand guidelines built to work in Arabic and English, print and screen.</p>
+        <ul><li data-i18n="s1.l1">Brand strategy &amp; positioning</li><li data-i18n="s1.l2">Naming &amp; verbal identity</li><li data-i18n="s1.l3">Logo &amp; visual systems</li><li data-i18n="s1.l4">Packaging &amp; guidelines</li></ul>
+      </article>
+      <article class="service">
+        <span class="num" data-i18n="s2.num">MARKETING</span>
+        <h3 data-i18n="s2.h">Plans that turn into customers</h3>
+        <p data-i18n="s2.p">Go-to-market strategy, content calendars and social media management that build an audience and keep it coming back.</p>
+        <ul><li data-i18n="s2.l1">Marketing strategy</li><li data-i18n="s2.l2">Social media management</li><li data-i18n="s2.l3">Content &amp; copywriting</li><li data-i18n="s2.l4">Influencer partnerships</li></ul>
+      </article>
+      <article class="service">
+        <span class="num" data-i18n="s3.num">ADVERTISING</span>
+        <h3 data-i18n="s3.h">Campaigns people talk about</h3>
+        <p data-i18n="s3.p">Big ideas executed across outdoor, TV, radio and digital, with media buying handled in-house so every dinar works harder.</p>
+        <ul><li data-i18n="s3.l1">Integrated campaigns</li><li data-i18n="s3.l2">Art direction &amp; production</li><li data-i18n="s3.l3">Video &amp; photography</li><li data-i18n="s3.l4">Media planning &amp; buying</li></ul>
+      </article>
+      <article class="service">
+        <span class="num" data-i18n="s4.num">DIGITAL</span>
+        <h3 data-i18n="s4.h">Products that convert</h3>
+        <p data-i18n="s4.p">Websites, landing pages and performance campaigns designed around the funnel, then tuned week by week on real data.</p>
+        <ul><li data-i18n="s4.l1">Web design &amp; development</li><li data-i18n="s4.l2">Paid search &amp; social</li><li data-i18n="s4.l3">SEO &amp; analytics</li><li data-i18n="s4.l4">CRM &amp; email automation</li></ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section class="lazy" id="process">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="pr.eyebrow">How we work</span>
+      <h2 data-i18n="pr.h2">From first call to launch in four moves.</h2>
+      <p data-i18n="pr.p">No black box. You see the thinking at every step, and you always know what happens next.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><span class="n">01</span><h3 data-i18n="p1.h">Discover</h3><p data-i18n="p1.p">A working session with your team, a look at your market and competitors, and a clear statement of the problem we're solving. Usually one to two weeks.</p></div>
+      <div class="step"><span class="n">02</span><h3 data-i18n="p2.h">Define</h3><p data-i18n="p2.p">Positioning, audiences, message hierarchy and a creative brief that everyone signs. This is where most of the hard decisions get made.</p></div>
+      <div class="step"><span class="n">03</span><h3 data-i18n="p3.h">Design</h3><p data-i18n="p3.p">Identity, campaign concepts and digital experiences, presented as finished directions rather than mood boards. Two rounds of refinement are built in.</p></div>
+      <div class="step"><span class="n">04</span><h3 data-i18n="p4.h">Deliver &amp; grow</h3><p data-i18n="p4.p">Production, media launch and a monthly performance review. We stay on as your marketing team for as long as you need us.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WORK ============ -->
+<section class="lazy" id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="wk.eyebrow">Selected work</span>
+      <h2 data-i18n="wk.h2">Work that moved the numbers.</h2>
+      <p data-i18n="wk.p">A sample of the kinds of challenges we take on. Full case studies, with client names and results, are available on request.</p>
+    </div>
+    <div class="work-scroller">
+    <div class="work-grid">
+      <a class="tile" href="#contact"><div class="art art-1"></div><span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        <div class="meta"><span class="tag" data-i18n="w1.t">Branding · F&amp;B</span><h3 data-i18n="w1.h">Café chain rebrand</h3><p data-i18n="w1.p">New identity, packaging and store graphics for a regional coffee brand opening its tenth location.</p></div></a>
+      <a class="tile" href="#contact"><div class="art art-2"></div><span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        <div class="meta"><span class="tag" data-i18n="w2.t">Digital · Fintech</span><h3 data-i18n="w2.h">App launch campaign</h3><p data-i18n="w2.p">Performance-led launch for a payments app, from onboarding screens to paid social and app-store creative.</p></div></a>
+      <a class="tile" href="#contact"><div class="art art-3"></div><span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        <div class="meta"><span class="tag" data-i18n="w3.t">Advertising · Real estate</span><h3 data-i18n="w3.h">Residential development</h3><p data-i18n="w3.p">Outdoor, radio and digital campaign that sold out phase one ahead of schedule.</p></div></a>
+      <a class="tile" href="#contact"><div class="art art-4"></div><span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        <div class="meta"><span class="tag" data-i18n="w4.t">Marketing · Hospitality</span><h3 data-i18n="w4.h">Hotel social relaunch</h3><p data-i18n="w4.p">Content strategy and always-on social management that tripled direct booking enquiries from Instagram.</p></div></a>
+      <a class="tile" href="#contact"><div class="art art-5"></div><span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        <div class="meta"><span class="tag" data-i18n="w5.t">Branding · Education</span><h3 data-i18n="w5.h">University open day</h3><p data-i18n="w5.p">Campaign identity and event collateral for an admissions season across print, outdoor and TikTok.</p></div></a>
+      <a class="tile" href="#contact"><div class="art art-6"></div><span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        <div class="meta"><span class="tag" data-i18n="w6.t">Digital · Retail</span><h3 data-i18n="w6.h">E-commerce growth</h3><p data-i18n="w6.p">Site redesign plus Google and Meta performance campaigns for a fashion retailer entering Saudi Arabia.</p></div></a>
+    </div>
+    </div>
+    <p class="swipe-hint"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span data-i18n="wk.swipe">Swipe to see more</span></p>
+    <p class="work-note" data-i18n="wk.note">Project visuals shown are placeholders. Swap in real campaign imagery before sending this page to clients.</p>
+  </div>
+</section>
+
+<!-- ============ BAND ============ -->
+<section class="band lazy">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow" data-i18n="bd.eyebrow">Why Pumpkin</span>
+      <h2 data-i18n="bd.h2">Senior people on your account, start to finish.</h2>
+      <div class="chips">
+        <span class="chip" data-i18n="c1">Arabic &amp; English creative</span><span class="chip" data-i18n="c2">In-house media buying</span><span class="chip" data-i18n="c3">Monthly performance reports</span><span class="chip" data-i18n="c4">Retainers or projects</span><span class="chip" data-i18n="c5">Jordan, GCC &amp; Levant</span>
+      </div>
+    </div>
+    <div>
+      <blockquote data-i18n="bd.q">“The people who pitch your account are the people who <em>do the work.</em> No handoff to a junior team the week after you sign.”</blockquote>
+      <p class="who" data-i18n="bd.who">The Pumpkin promise</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="contact lazy" id="contact">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow" data-i18n="ct.eyebrow">Let's talk</span>
+      <h2 data-i18n="ct.h2">Got a brand that needs <span class="o">growing?</span></h2>
+      <div class="contact-info">
+        <div class="row"><span class="label" data-i18n="ct.email">Email</span><span class="val"><span id="emailText" dir="ltr">hello@pumpkinllc.com</span><button class="copy" type="button" data-copy="hello@pumpkinllc.com" data-i18n="ct.copy">Copy</button></span></div>
+        <div class="row"><span class="label" data-i18n="ct.studio">Studio</span><span class="val" data-i18n="ct.studioV">Khilda, Amman, Jordan</span></div>
+        <div class="row"><span class="label" data-i18n="ct.hours">Hours</span><span class="val" data-i18n="ct.hoursV">Sunday to Thursday, 9:00 to 18:00 (GMT+3)</span></div>
+        <div class="row"><span class="label" data-i18n="ct.follow">Follow</span>
+          <div class="socials">
+            <a href="https://www.instagram.com/pumpkin.llc/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg><span data-i18n="so.ig">Instagram</span></a>
+            <a href="https://www.facebook.com/Pumpkin.groupllc/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg><span data-i18n="so.fb">Facebook</span></a>
+            <a href="https://www.linkedin.com/company/pumpkin-group-llc" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg><span data-i18n="so.li">LinkedIn</span></a>
+            <a href="https://www.behance.net/PumpkinGroup" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 6h6a3 3 0 0 1 0 6H3zM3 12h7a3 3 0 0 1 0 6H3zM14 14h7a3.5 3.5 0 1 0-.5 2M15 6h5"/></svg><span data-i18n="so.be">Behance</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <form class="form" id="contactForm" novalidate>
+      <div id="formFields" style="display:contents">
+        <div class="two">
+          <div class="field"><label for="f-name" data-i18n="f.name">Your name</label><input id="f-name" name="name" type="text" autocomplete="name" placeholder="Rana Haddad" data-i18n-ph="f.nameP" required></div>
+          <div class="field"><label for="f-company" data-i18n="f.co">Company</label><input id="f-company" name="company" type="text" autocomplete="organization" placeholder="Haddad Trading Co." data-i18n-ph="f.coP"></div>
+        </div>
+        <div class="two">
+          <div class="field"><label for="f-email" data-i18n="f.email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="rana@company.com" dir="ltr" required></div>
+          <div class="field"><label for="f-service" data-i18n="f.need">What do you need?</label>
+            <select id="f-service" name="service">
+              <option data-i18n="f.o1">Branding &amp; identity</option><option data-i18n="f.o2">Marketing &amp; social media</option><option data-i18n="f.o3">Advertising campaign</option><option data-i18n="f.o4">Website or digital product</option><option data-i18n="f.o5">Not sure yet, let's talk</option>
+            </select></div>
+        </div>
+        <div class="field"><span class="lbl" id="budgetLbl" data-i18n="f.budget">Approximate budget (JOD)</span>
+          <div class="budget" role="radiogroup" aria-labelledby="budgetLbl">
+            <input type="radio" name="budget" id="b1" value="Under 5,000"><label for="b1" data-i18n="f.b1">Under 5k</label>
+            <input type="radio" name="budget" id="b2" value="5,000 to 15,000" checked><label for="b2" data-i18n="f.b2">5k to 15k</label>
+            <input type="radio" name="budget" id="b3" value="15,000 to 50,000"><label for="b3" data-i18n="f.b3">15k to 50k</label>
+            <input type="radio" name="budget" id="b4" value="Over 50,000"><label for="b4" data-i18n="f.b4">50k+</label>
+          </div>
+        </div>
+        <div class="field"><label for="f-msg" data-i18n="f.msg">Tell us about the project</label><textarea id="f-msg" name="message" placeholder="What are you launching, who is it for, and when does it need to be live?" data-i18n-ph="f.msgP"></textarea></div>
+        <button class="btn btn-primary" type="submit" data-i18n="f.send">Send enquiry</button>
+        <p class="form-note" id="formNote" data-i18n="f.note">We reply within one working day.</p>
+      </div>
+      <div class="success" id="formSuccess" hidden>
+        <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <h3><span data-i18n="f.thanks">Thanks,</span> <span id="successName">friend</span>.</h3>
+        <p data-i18n="f.okP">We've got your enquiry and will be in touch within one working day. In the meantime, have a look at our Instagram for recent work.</p>
+        <button class="btn btn-ghost" type="button" id="resetForm" data-i18n="f.again">Send another</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span data-i18n="ft.1">© 2026 Pumpkin Group LLC · Amman, Jordan</span>
+    <span data-i18n="ft.2">Branding · Marketing · Advertising · Digital</span>
+  </div>
+  <div class="big" aria-hidden="true">PUMPKIN</div>
+</footer>
+
+<div class="sticky-cta" id="stickyCta"><a class="btn btn-primary" href="#contact" data-i18n="nav.cta">Start a project</a></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" id="threeLib" defer></script>
+<script>
+(function(){
+  var root=document.documentElement;
+  var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------------- i18n ---------------- */
+  var AR={
+    'nav.about':'من نحن','nav.services':'خدماتنا','nav.process':'طريقة عملنا','nav.work':'أعمالنا','nav.contact':'تواصل معنا','nav.cta':'ابدأ مشروعك','nav.menu':'القائمة',
+    'hero.pill':'نستقبل عملاء جدد للربع الأول من 2027','hero.sub':'علامة تجارية · تسويق · إعلان · رقمي — عمّان، الأردن',
+    'hero.h1':'نُنمّي علامات تجارية يتذكّرها الناس <span class="o">فعلاً</span>.',
+    'hero.lede':'بامبكن وكالة تسويق متكاملة مقرّها عمّان. <strong>الاستراتيجية والهوية والحملات والرقمي</strong> تحت سقف واحد، لعلامات تجارية في الأردن والمنطقة تريد أن تتميّز وتبقى في الذاكرة.',
+    'hero.cta1':'ابدأ مشروعك','hero.cta2':'شاهد أعمالنا','fact.1':'تأسست','fact.2b':'عمّان','fact.2':'خلدا، الأردن','fact.3':'تخصصات، فريق واحد',
+    'mq.1':'استراتيجية العلامة','mq.2':'الهوية البصرية','mq.3':'السوشيال ميديا','mq.4':'الحملات','mq.5':'شراء الإعلام','mq.6':'إنتاج المحتوى','mq.7':'المواقع والتطبيقات','mq.8':'التسويق بالأداء','mq.9':'التغليف','mq.10':'فعاليات الإطلاق',
+    'about.eyebrow':'من نحن','about.h2':'فريق صغير بشهية كبيرة لعلامات تجارية لها معنى.',
+    'about.p1':'انطلقت بامبكن في عمّان عام 2020 بفكرة بسيطة: يجب أن تبدو العلامة التجارية نفسها على لوحة إعلانية في شارع مكة كما تبدو في ريل مدته 15 ثانية. <strong>معظم الوكالات توزّع هذا العمل على أقسام متفرقة. نحن نبقيه في غرفة واحدة.</strong>',
+    'about.p2':'يعمل الاستراتيجيون والمصممون والكتّاب ومخططو الإعلام على كل حساب معاً، فالتفكير الذي يصوغ الشعار هو نفسه الذي يصوغ حملة الإطلاق وشبكة إنستغرام وصفحة الهبوط.',
+    'b1.h':'الاستراتيجية قبل البكسل','b1.p':'كل مشروع يبدأ بسؤال العمل لا بالمخرَج. نكتشف ما يحتاج إلى تغيير قبل أن نقرر ماذا نصنع.',
+    'b2.h':'ثنائيو اللغة تلقائياً','b2.p':'نصمم العربية والإنجليزية معاً من اليوم الأول، فلا شيء يُقرأ كأنه ترجمة.',
+    'b3.h':'نقيس ولا نخمّن','b3.p':'نقدّم تقارير عن الوصول والتفاعل وتكلفة النتيجة ونمو المبيعات. إذا لم تنجح قناة، نقولها ونحوّل الميزانية.',
+    'sv.eyebrow':'ماذا نفعل','sv.h2':'أربعة تخصصات. وجهة نظر واحدة.','sv.p':'استعن بنا لعمل واحد أو للرحلة كاملة. في الحالتين، الفريق نفسه يحمل الفكرة من أول موجز إلى آخر منشور.',
+    's1.num':'العلامة التجارية','s1.h':'هوية تصمد في كل مكان','s1.p':'التسمية والتموضع وأنظمة الشعار والخطوط وأدلة العلامة، مبنية لتعمل بالعربية والإنجليزية، مطبوعةً وعلى الشاشة.','s1.l1':'استراتيجية العلامة والتموضع','s1.l2':'التسمية والهوية اللفظية','s1.l3':'الشعار والأنظمة البصرية','s1.l4':'التغليف وأدلة الاستخدام',
+    's2.num':'التسويق','s2.h':'خطط تتحوّل إلى عملاء','s2.p':'استراتيجية دخول السوق وتقاويم المحتوى وإدارة السوشيال ميديا التي تبني جمهوراً وتُبقيه يعود.','s2.l1':'استراتيجية التسويق','s2.l2':'إدارة السوشيال ميديا','s2.l3':'المحتوى وكتابة النصوص','s2.l4':'شراكات المؤثرين',
+    's3.num':'الإعلان','s3.h':'حملات يتحدث عنها الناس','s3.p':'أفكار كبيرة تُنفَّذ عبر الطرق والتلفزيون والراديو والرقمي، مع شراء إعلامي داخلي ليعمل كل دينار بجهد أكبر.','s3.l1':'حملات متكاملة','s3.l2':'الإخراج الفني والإنتاج','s3.l3':'الفيديو والتصوير','s3.l4':'تخطيط وشراء الإعلام',
+    's4.num':'الرقمي','s4.h':'منتجات تحوّل الزوار إلى عملاء','s4.p':'مواقع وصفحات هبوط وحملات أداء مصممة حول قمع المبيعات، ثم تُضبط أسبوعاً بعد أسبوع على بيانات حقيقية.','s4.l1':'تصميم وتطوير المواقع','s4.l2':'الإعلانات المدفوعة بحثاً واجتماعياً','s4.l3':'تحسين محركات البحث والتحليلات','s4.l4':'إدارة العملاء والبريد الآلي',
+    'pr.eyebrow':'كيف نعمل','pr.h2':'من أول مكالمة إلى الإطلاق في أربع خطوات.','pr.p':'لا صندوق أسود. ترى التفكير في كل خطوة، وتعرف دائماً ما الذي سيحدث بعد ذلك.',
+    'p1.h':'اكتشاف','p1.p':'جلسة عمل مع فريقك، ونظرة على سوقك ومنافسيك، وصياغة واضحة للمشكلة التي نحلّها. عادةً أسبوع إلى أسبوعين.',
+    'p2.h':'تحديد','p2.p':'التموضع والجمهور وتسلسل الرسائل وموجز إبداعي يوقّع عليه الجميع. هنا تُتخذ معظم القرارات الصعبة.',
+    'p3.h':'تصميم','p3.p':'الهوية ومفاهيم الحملات والتجارب الرقمية، تُعرض كاتجاهات مكتملة لا كلوحات إلهام. جولتا تحسين مضمّنتان.',
+    'p4.h':'تسليم ونمو','p4.p':'الإنتاج وإطلاق الإعلام ومراجعة أداء شهرية. نبقى فريقك التسويقي ما دمت تحتاجنا.',
+    'wk.eyebrow':'أعمال مختارة','wk.h2':'أعمال حرّكت الأرقام.','wk.p':'عيّنة من التحديات التي نتصدى لها. دراسات الحالة الكاملة، بأسماء العملاء والنتائج، متاحة عند الطلب.','wk.swipe':'اسحب لرؤية المزيد',
+    'w1.t':'علامة تجارية · أغذية ومشروبات','w1.h':'إعادة تصميم هوية سلسلة مقاهٍ','w1.p':'هوية جديدة وتغليف وجرافيكس للمتاجر لعلامة قهوة إقليمية تفتتح فرعها العاشر.',
+    'w2.t':'رقمي · تكنولوجيا مالية','w2.h':'حملة إطلاق تطبيق','w2.p':'إطلاق قائم على الأداء لتطبيق مدفوعات، من شاشات التسجيل إلى الإعلانات الاجتماعية وتصاميم متجر التطبيقات.',
+    'w3.t':'إعلان · عقارات','w3.h':'مشروع سكني','w3.p':'حملة طرق وراديو ورقمية باعت المرحلة الأولى بالكامل قبل الموعد.',
+    'w4.t':'تسويق · ضيافة','w4.h':'إعادة إطلاق فندق على السوشيال','w4.p':'استراتيجية محتوى وإدارة مستمرة ضاعفت استفسارات الحجز المباشر من إنستغرام ثلاث مرات.',
+    'w5.t':'علامة تجارية · تعليم','w5.h':'يوم الجامعة المفتوح','w5.p':'هوية حملة ومواد فعاليات لموسم القبول عبر المطبوعات والطرق وتيك توك.',
+    'w6.t':'رقمي · تجزئة','w6.h':'نمو التجارة الإلكترونية','w6.p':'إعادة تصميم الموقع مع حملات أداء على جوجل وميتا لمتجر أزياء يدخل السوق السعودية.',
+    'wk.note':'الصور المعروضة مؤقتة. استبدلها بصور الحملات الحقيقية قبل إرسال الصفحة للعملاء.',
+    'bd.eyebrow':'لماذا بامبكن','bd.h2':'خبراء كبار على حسابك، من البداية إلى النهاية.','c1':'إبداع بالعربية والإنجليزية','c2':'شراء إعلامي داخلي','c3':'تقارير أداء شهرية','c4':'عقود شهرية أو مشاريع','c5':'الأردن والخليج وبلاد الشام',
+    'bd.q':'«من يعرض عليك الفكرة هم أنفسهم من <em>ينفّذون العمل.</em> لا تسليم لفريق مبتدئ بعد أسبوع من التوقيع.»','bd.who':'وعد بامبكن',
+    'ct.eyebrow':'لنتحدث','ct.h2':'لديك علامة تجارية تحتاج إلى <span class="o">نموّ؟</span>','ct.email':'البريد الإلكتروني','ct.copy':'نسخ','ct.studio':'الاستوديو','ct.studioV':'خلدا، عمّان، الأردن','ct.hours':'ساعات العمل','ct.hoursV':'الأحد إلى الخميس، 9:00 إلى 18:00 (توقيت عمّان)','ct.follow':'تابعنا',
+    'so.ig':'إنستغرام','so.fb':'فيسبوك','so.li':'لينكدإن','so.be':'بيهانس',
+    'f.name':'اسمك','f.nameP':'رنا حدّاد','f.co':'الشركة','f.coP':'شركة حدّاد التجارية','f.email':'البريد الإلكتروني','f.need':'ما الذي تحتاجه؟','f.o1':'علامة تجارية وهوية','f.o2':'تسويق وسوشيال ميديا','f.o3':'حملة إعلانية','f.o4':'موقع أو منتج رقمي','f.o5':'لست متأكداً بعد، لنتحدث',
+    'f.budget':'الميزانية التقريبية (دينار أردني)','f.b1':'أقل من 5 آلاف','f.b2':'5 إلى 15 ألفاً','f.b3':'15 إلى 50 ألفاً','f.b4':'أكثر من 50 ألفاً','f.msg':'أخبرنا عن المشروع','f.msgP':'ما الذي تطلقه، ولمن، ومتى يجب أن يكون جاهزاً؟','f.send':'أرسل الاستفسار','f.note':'نرد خلال يوم عمل واحد.',
+    'f.thanks':'شكراً يا','f.okP':'وصلنا استفسارك وسنتواصل معك خلال يوم عمل واحد. في هذه الأثناء، ألقِ نظرة على إنستغرام لمشاهدة أحدث أعمالنا.','f.again':'أرسل استفساراً آخر',
+    'ft.1':'© 2026 بامبكن جروب ذ.م.م · عمّان، الأردن','ft.2':'علامة تجارية · تسويق · إعلان · رقمي'
+  };
+  var MSG={en:{err:'Add your name and a valid email so we can reply.',copied:'Copied',select:'Select to copy',close:'Close',menu:'Menu',lang:'عربي',langLabel:'Switch to Arabic'},
+           ar:{err:'أضف اسمك وبريداً إلكترونياً صالحاً حتى نتمكن من الرد.',copied:'تم النسخ',select:'حدّد النص للنسخ',close:'إغلاق',menu:'القائمة',lang:'EN',langLabel:'التبديل إلى الإنجليزية'}};
+  var EN={}, ENP={};
+  var nodes=document.querySelectorAll('[data-i18n]'), phNodes=document.querySelectorAll('[data-i18n-ph]');
+  nodes.forEach(function(el){ var k=el.getAttribute('data-i18n'); if(!(k in EN)) EN[k]=el.innerHTML; });
+  phNodes.forEach(function(el){ var k=el.getAttribute('data-i18n-ph'); ENP[k]=el.getAttribute('placeholder'); });
+  var lang='en';
+  function setLang(l){
+    lang=l;
+    nodes.forEach(function(el){ var k=el.getAttribute('data-i18n'); var v=l==='ar'?AR[k]:EN[k]; if(v!=null) el.innerHTML=v; });
+    phNodes.forEach(function(el){ var k=el.getAttribute('data-i18n-ph'); el.setAttribute('placeholder', l==='ar'?(AR[k]||ENP[k]):ENP[k]); });
+    root.setAttribute('lang', l); root.setAttribute('dir', l==='ar'?'rtl':'ltr');
+    document.title = l==='ar' ? 'بامبكن جروب' : 'Pumpkin Group';
+    var lb=document.getElementById('langBtn'); lb.textContent=MSG[l].lang; lb.setAttribute('aria-label',MSG[l].langLabel);
+    if(menuBtn.getAttribute('aria-expanded')==='true') menuBtn.textContent=MSG[l].close;
+    try{localStorage.setItem('pk-lang',l);}catch(e){}
+    rebuildMarquee();
+  }
+
+  /* ---------------- theme ---------------- */
+  var themeBtn=document.getElementById('themeBtn');
+  try{var saved=localStorage.getItem('pk-theme'); if(saved==='light'||saved==='dark') root.setAttribute('data-theme',saved);}catch(e){}
+  function isLight(){ var t=root.getAttribute('data-theme'); if(t) return t==='light'; return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches; }
+  themeBtn.addEventListener('click',function(){ var next=isLight()?'dark':'light'; root.setAttribute('data-theme',next); try{localStorage.setItem('pk-theme',next);}catch(e){} });
+
+  /* ---------------- nav ---------------- */
+  var nav=document.getElementById('nav'), links=document.getElementById('navLinks'), menuBtn=document.getElementById('menuBtn');
+  var ticking=false;
+  window.addEventListener('scroll',function(){ if(!ticking){ requestAnimationFrame(function(){ nav.classList.toggle('scrolled',window.scrollY>8); ticking=false; }); ticking=true; } },{passive:true});
+  nav.classList.toggle('scrolled',window.scrollY>8);
+  function closeMenu(){ links.classList.remove('open'); menuBtn.setAttribute('aria-expanded','false'); menuBtn.textContent=MSG[lang].menu; }
+  menuBtn.addEventListener('click',function(){ var open=links.classList.toggle('open'); menuBtn.setAttribute('aria-expanded',String(open)); menuBtn.textContent=open?MSG[lang].close:MSG[lang].menu; });
+  links.addEventListener('click',function(e){ if(e.target.tagName==='A') closeMenu(); });
+
+  /* ---------------- marquee ---------------- */
+  var mq=document.getElementById('marquee'); var mqBase=mq.innerHTML;
+  function rebuildMarquee(){ var items=[].slice.call(mq.querySelectorAll('[data-i18n]')).slice(0,10); var html=items.map(function(s){return s.outerHTML}).join(''); mq.innerHTML=html+html; }
+  rebuildMarquee();
+
+  /* ---------------- language init ---------------- */
+  var startLang='en';
+  try{ var sl=localStorage.getItem('pk-lang'); if(sl==='ar'||sl==='en') startLang=sl; }catch(e){}
+  if(startLang==='ar') setLang('ar'); else { document.getElementById('langBtn').setAttribute('aria-label',MSG.en.langLabel); }
+  document.getElementById('langBtn').addEventListener('click',function(){ setLang(lang==='ar'?'en':'ar'); });
+
+  /* ---------------- sticky phone CTA: hide once the contact section is on screen ---------------- */
+  var sticky=document.getElementById('stickyCta'), contact=document.getElementById('contact');
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(en){ sticky.classList.toggle('away', en[0].isIntersecting); },{threshold:.15}).observe(contact);
+  }
+
+  /* ---------------- copy email ---------------- */
+  document.querySelectorAll('.copy').forEach(function(b){
+    b.addEventListener('click',function(){
+      var txt=b.getAttribute('data-copy'); var original=b.textContent;
+      function done(ok){ b.textContent=ok?MSG[lang].copied:MSG[lang].select; setTimeout(function(){ b.textContent=lang==='ar'?AR['ct.copy']:EN['ct.copy']; },1800); }
+      function selectEmail(){ var el=document.getElementById('emailText'); var r=document.createRange(); r.selectNodeContents(el); var s=window.getSelection(); s.removeAllRanges(); s.addRange(r); }
+      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(function(){done(true)},function(){ selectEmail(); done(false); }); }
+      else { selectEmail(); done(false); }
+    });
+  });
+
+  /* ---------------- form ---------------- */
+  var form=document.getElementById('contactForm'), fields=document.getElementById('formFields'), success=document.getElementById('formSuccess'), note=document.getElementById('formNote');
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var name=document.getElementById('f-name'), email=document.getElementById('f-email'); var ok=true;
+    [name,email].forEach(function(f){ f.classList.remove('invalid'); if(!f.value.trim()||(f.type==='email'&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.value))){ f.classList.add('invalid'); ok=false; } });
+    if(!ok){ note.textContent=MSG[lang].err; (name.value.trim()?email:name).focus(); return; }
+    document.getElementById('successName').textContent=name.value.trim().split(' ')[0];
+    fields.hidden=true; fields.style.display='none'; success.hidden=false;
+  });
+  document.getElementById('resetForm').addEventListener('click',function(){
+    form.reset(); success.hidden=true; fields.hidden=false; fields.style.display='contents'; note.textContent=lang==='ar'?AR['f.note']:EN['f.note'];
+    document.getElementById('f-name').focus();
+  });
+
+  /* ---------------- Three.js hero: particle pumpkin ----------------
+     Budget: one Points draw call + one ring, DPR capped at 1.5, 2.5k points on phones / 6k on desktop,
+     render loop runs only while the hero is on screen and the tab is visible; reduced-motion gets a single frame. */
+  function cssColor(name){ return getComputedStyle(root).getPropertyValue(name).trim(); }
+  function initHero(){
+    if(!window.THREE) return;
+    var canvas=document.getElementById('heroCanvas'), hero=document.getElementById('hero');
+    var renderer;
+    try{ renderer=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:false,powerPreference:'high-performance'}); }catch(e){ return; }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
+    renderer.setClearColor(0x000000,0);
+    var scene=new THREE.Scene();
+    var camera=new THREE.PerspectiveCamera(40,1,0.1,60); camera.position.z=7.5;
+    var group=new THREE.Group(); scene.add(group);
+
+    var phone=window.innerWidth<700;
+    var N=phone?2600:6000;
+    var pos=new Float32Array(N*3), col=new Float32Array(N*3), rib=new Float32Array(N);
+    var golden=Math.PI*(3-Math.sqrt(5));
+    for(var i=0;i<N;i++){
+      var y=1-(2*(i+.5))/N, r=Math.sqrt(1-y*y), phi=i*golden;
+      var x=Math.cos(phi)*r, z=Math.sin(phi)*r;
+      var theta=Math.atan2(z,x);
+      var ribs=1+0.085*Math.cos(theta*10)*(1-Math.abs(y)*0.6);     /* ten ribs, fading toward the poles */
+      var dimple=1-0.18*Math.pow(Math.abs(y),6);                     /* pressed-in top and bottom */
+      var R=2.05*ribs*dimple;
+      pos[i*3]=x*R; pos[i*3+1]=y*R*0.8; pos[i*3+2]=z*R;
+      rib[i]=(Math.cos(theta*10)+1)/2;
+    }
+    var geo=new THREE.BufferGeometry();
+    geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+    var dot=(function(){ var c=document.createElement('canvas'); c.width=c.height=64; var g=c.getContext('2d'); var grd=g.createRadialGradient(32,32,0,32,32,32); grd.addColorStop(0,'rgba(255,255,255,1)'); grd.addColorStop(.45,'rgba(255,255,255,.95)'); grd.addColorStop(1,'rgba(255,255,255,0)'); g.fillStyle=grd; g.fillRect(0,0,64,64); return new THREE.CanvasTexture(c); })();
+    var mat=new THREE.PointsMaterial({size:phone?0.11:0.095,map:dot,alphaTest:0.04,vertexColors:true,transparent:true,opacity:0.95,depthWrite:false,sizeAttenuation:true});
+    var points=new THREE.Points(geo,mat); group.add(points);
+
+    /* stem: a short tilted cluster of green points */
+    var SN=160, spos=new Float32Array(SN*3);
+    for(var j=0;j<SN;j++){ var a=Math.random()*Math.PI*2, rr=Math.sqrt(Math.random())*0.22, h=Math.random()*0.7; spos[j*3]=Math.cos(a)*rr+h*0.35; spos[j*3+1]=1.5+h; spos[j*3+2]=Math.sin(a)*rr; }
+    var sgeo=new THREE.BufferGeometry(); sgeo.setAttribute('position',new THREE.BufferAttribute(spos,3));
+    var smat=new THREE.PointsMaterial({size:0.1,map:dot,alphaTest:0.04,transparent:true,opacity:0.9,depthWrite:false});
+    group.add(new THREE.Points(sgeo,smat));
+
+    /* an orbit ring for depth */
+    var ring=new THREE.Mesh(new THREE.RingGeometry(3.05,3.08,160),new THREE.MeshBasicMaterial({transparent:true,opacity:0.35,side:THREE.DoubleSide}));
+    ring.rotation.x=Math.PI/2.6; ring.rotation.y=0.3; group.add(ring);
+
+    /* ambient dust */
+    var DN=phone?120:260, dpos=new Float32Array(DN*3);
+    for(var k=0;k<DN;k++){ var ang=Math.random()*Math.PI*2, rad=2.6+Math.random()*3, hh=(Math.random()-.5)*4; dpos[k*3]=Math.cos(ang)*rad; dpos[k*3+1]=hh; dpos[k*3+2]=Math.sin(ang)*rad; }
+    var dgeo=new THREE.BufferGeometry(); dgeo.setAttribute('position',new THREE.BufferAttribute(dpos,3));
+    var dmat=new THREE.PointsMaterial({size:0.06,map:dot,alphaTest:0.04,transparent:true,opacity:0.5,depthWrite:false});
+    var dust=new THREE.Points(dgeo,dmat); scene.add(dust);
+
+    function applyColors(){
+      var light=isLight();
+      var a=new THREE.Color(cssColor('--accent')), b=new THREE.Color(cssColor('--accent-2')), leaf=new THREE.Color(cssColor('--leaf')), fg3=new THREE.Color(cssColor('--fg-3'));
+      var tmp=new THREE.Color();
+      for(var i=0;i<N;i++){
+        var yy=pos[i*3+1]/1.64; /* -1..1 */
+        tmp.copy(a).lerp(b, rib[i]*0.7+ (yy+1)*0.15);
+        if(light) tmp.multiplyScalar(0.92);
+        col[i*3]=tmp.r; col[i*3+1]=tmp.g; col[i*3+2]=tmp.b;
+      }
+      geo.attributes.color.needsUpdate=true;
+      smat.color.copy(leaf); dmat.color.copy(light?fg3:b); ring.material.color.copy(light?a:b);
+      mat.blending = light?THREE.NormalBlending:THREE.AdditiveBlending; mat.needsUpdate=true;
+      mat.opacity = light?0.85:0.95; dmat.opacity = light?0.35:0.5; ring.material.opacity = light?0.3:0.35;
+    }
+    applyColors();
+    new MutationObserver(applyColors).observe(root,{attributes:true,attributeFilter:['data-theme']});
+    if(window.matchMedia){ var mql=window.matchMedia('(prefers-color-scheme: light)'); if(mql.addEventListener) mql.addEventListener('change',applyColors); }
+
+    var W=1,H=1, rtl=false, wrapEl=hero.querySelector('.wrap');
+    function layout(){
+      W=hero.clientWidth; H=hero.clientHeight;
+      renderer.setSize(W,H,false);
+      camera.aspect=W/H; camera.updateProjectionMatrix();
+      var halfH=camera.position.z*Math.tan(camera.fov*Math.PI/360), halfW=halfH*camera.aspect;
+      var upp=(2*halfW)/W;                        /* world units per CSS pixel at the pumpkin's depth */
+      rtl=root.getAttribute('dir')==='rtl';
+      var wr=wrapEl.getBoundingClientRect(), hr=hero.getBoundingClientRect();
+      var cs=getComputedStyle(wrapEl), padL=parseFloat(cs.paddingLeft)||0, padR=parseFloat(cs.paddingRight)||0;
+      var cLeft=wr.left-hr.left+padL, cRight=wr.right-hr.left-padR, cw=cRight-cLeft;
+      var cxPx, cyPx, rPx;
+      if(W<1000){ /* phone and tablet: the pumpkin owns the reserved band above the headline */
+        var band=parseFloat(cs.paddingTop)||200;
+        rPx=Math.min(band*0.44, cw*0.36);
+        cyPx=(wr.top-hr.top)+band*0.5;
+        cxPx= rtl ? cLeft+rPx*1.05 : cRight-rPx*1.05;
+      } else {        /* desktop: fill the empty right (or left, in RTL) column beside the text */
+        rPx=Math.min(cw*0.215, H*0.3);
+        cyPx=H*0.47;
+        cxPx= rtl ? cLeft+cw*0.2125 : cLeft+cw*0.7875;
+      }
+      group.position.set((cxPx-W/2)*upp, (H/2-cyPx)*upp, 0);
+      group.scale.setScalar(rPx*upp/2.05);
+      mat.opacity=isLight()?0.88:0.95;
+    }
+    layout();
+    if('ResizeObserver' in window) new ResizeObserver(layout).observe(hero); else window.addEventListener('resize',layout);
+    new MutationObserver(layout).observe(root,{attributes:true,attributeFilter:['dir']});
+
+    var tx=0,ty=0,cx=0,cy=0;
+    if(!phone && window.matchMedia('(hover:hover)').matches){
+      window.addEventListener('pointermove',function(e){ tx=(e.clientX/window.innerWidth-.5); ty=(e.clientY/window.innerHeight-.5); },{passive:true});
+    }
+    var running=false, visible=true, rafId=0, t0=performance.now();
+    function frame(now){
+      rafId=0;
+      var t=(now-t0)/1000;
+      cx+=(tx-cx)*0.04; cy+=(ty-cy)*0.04;
+      group.rotation.y = t*0.22 + cx*0.9;
+      group.rotation.x = 0.18 + cy*0.5;
+      group.rotation.z = Math.sin(t*0.5)*0.03;
+      var s=1+Math.sin(t*1.1)*0.012; points.scale.setScalar(s);
+      dust.rotation.y = -t*0.04;
+      renderer.render(scene,camera);
+      if(running&&visible&&!reduce) rafId=requestAnimationFrame(frame);
+    }
+    function start(){ if(!rafId&&running&&visible) rafId=requestAnimationFrame(frame); }
+    if('IntersectionObserver' in window){ new IntersectionObserver(function(en){ running=en[0].isIntersecting; start(); },{threshold:0}).observe(hero); } else { running=true; start(); }
+    document.addEventListener('visibilitychange',function(){ visible=!document.hidden; start(); });
+    if(reduce){ renderer.render(scene,camera); }
+  }
+  var lib=document.getElementById('threeLib');
+  if(window.THREE) initHero(); else lib.addEventListener('load',initHero);
+})();
+</script>
+</body>
+</html>

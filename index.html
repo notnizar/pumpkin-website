@@ -35,6 +35,7 @@
 (function(){
   try{
     var d=document.documentElement;
+    d.classList.add('js');   /* the dock's menu button and the work carousel dots need the script */
     if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     if(!('IntersectionObserver' in window)) return;
     d.classList.add('anim');
@@ -88,6 +89,7 @@ img{max-width:100%;display:block}
 h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;line-height:1.02;margin:0;text-wrap:balance;letter-spacing:-.02em}
 p{margin:0}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
 /* Arabic typography: no negative tracking, taller lines, Arabic faces */
 [dir="rtl"] body,[dir="rtl"] .btn,[dir="rtl"] input,[dir="rtl"] select,[dir="rtl"] textarea,[dir="rtl"] button{font-family:var(--font-body-ar)}
@@ -132,7 +134,7 @@ section{padding-block:clamp(64px,10vw,140px)}
   :root:not([data-theme="dark"]) .icon-btn .moon{opacity:1;rotate:0deg;scale:1}
 }
 .lang-btn{font-family:var(--font-body-ar),var(--font-body)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:999px;padding:14px 24px;min-height:48px;font-weight:600;font-size:15px;line-height:1;cursor:pointer;border:1px solid transparent;position:relative;overflow:hidden;transition:translate .25s var(--ease-out),transform .4s var(--ease-out),background .2s,color .2s,border-color .2s;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:999px;padding:14px 24px;min-height:48px;font-weight:600;font-size:15px;line-height:1;cursor:pointer;border:1px solid transparent;position:relative;overflow:hidden;transition:translate .25s var(--ease-out),transform .4s var(--ease-out),scale .2s var(--ease-out),background .2s,color .2s,border-color .2s;white-space:nowrap}
 .btn:hover{translate:0 -2px}
 .btn-primary{background:var(--accent);color:var(--accent-ink)}
 .btn-primary:hover{background:var(--accent-2)}
@@ -140,22 +142,15 @@ section{padding-block:clamp(64px,10vw,140px)}
 .btn-ghost:hover{border-color:var(--fg-3)}
 .btn svg{width:16px;height:16px}
 .nav .btn{padding:11px 18px;min-height:40px;font-size:14px}
-.menu-btn{display:none}
-@media (max-width:900px){
-  .nav-links{display:none}
-  .nav-links.open{display:flex;position:absolute;top:68px;left:0;right:0;flex-direction:column;gap:0;background:var(--bg-2);border-bottom:1px solid var(--line);padding:8px max(16px,env(safe-area-inset-right,0px)) 16px max(16px,env(safe-area-inset-left,0px))}
-  .nav-links.open a{padding:16px 0;border-bottom:1px solid var(--line);font-size:18px;color:var(--fg)}
-  .nav-links.open a:last-child{border-bottom:none}
-  .menu-btn{display:inline-grid}
-  .nav .btn-primary{display:none}
-}
+/* up to 900px the links and the CTA move to the floating dock and its sheet (end of the stylesheet) */
+@media (max-width:900px){.nav-links,.nav .btn-primary{display:none}}
 
 /* ---------- Hero ---------- */
 .hero{position:relative;padding-block:clamp(40px,8vw,110px) clamp(40px,6vw,90px);overflow:hidden}
 .hero canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;display:block}
 .hero .wrap{position:relative;display:grid;gap:clamp(24px,4vw,48px)}
 @media (min-width:1000px){.hero .wrap{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}.hero .wrap>*{grid-column:1}}
-@media (max-width:999px){.hero .wrap{padding-top:clamp(170px,46vw,260px)}}
+@media (max-width:999px){.hero .wrap{padding-top:clamp(170px,46vw,260px)}html:not(.js) .hero .wrap{padding-top:0}}
 .hero-top{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;color:var(--fg-2);font-size:14px}
 .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:7px 14px;background:color-mix(in srgb,var(--bg-2) 80%,transparent)}
 .pill .dot{width:8px;height:8px;border-radius:50%;background:var(--leaf);box-shadow:0 0 0 4px color-mix(in srgb,var(--leaf) 25%,transparent)}
@@ -316,14 +311,8 @@ section{padding-block:clamp(64px,10vw,140px)}
 footer{border-top:1px solid var(--line);padding-block:36px 0;color:var(--fg-3);font-size:14px}
 footer .wrap{display:flex;flex-wrap:wrap;gap:12px 20px;justify-content:space-between;align-items:center}
 footer .big span{display:inline-block;translate:0 calc((1 - var(--fp,1))*45%)}
-footer .big{font-family:var(--font-display);font-size:clamp(64px,16vw,220px);font-weight:700;letter-spacing:-.04em;line-height:.8;color:var(--fg);opacity:.08;text-align:center;margin-top:28px;user-select:none;overflow:hidden;padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
-@media (min-width:900px){footer .big{padding-bottom:0}}
-
-/* ---------- Phone-only sticky CTA ---------- */
-.sticky-cta{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:color-mix(in srgb,var(--bg) 94%,transparent);border-top:1px solid var(--line);transform:translateY(0);transition:transform .3s}
-.sticky-cta.away{transform:translateY(110%)}
-.sticky-cta .btn{width:100%}
-@media (max-width:899px){.sticky-cta{display:block}}
+footer .big{font-family:var(--font-display);font-size:clamp(64px,16vw,220px);font-weight:700;letter-spacing:-.04em;line-height:.8;color:var(--fg);opacity:.08;text-align:center;margin-top:28px;user-select:none;overflow:hidden;padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+@media (min-width:901px){footer .big{padding-bottom:0}}
 
 /* =====================================================================================
    Motion system
@@ -394,7 +383,7 @@ section[id],main[id]{scroll-margin-top:72px}
 .scroll-cue .cue-line i{position:absolute;left:0;top:0;width:100%;height:40%;background:var(--accent);animation:cue 1.9s var(--ease-in-out) infinite}
 @keyframes cue{0%{translate:0 -100%}100%{translate:0 260%}}
 
-/* ---- Nav: underline that travels, hides on scroll-down, progress bar, menu stagger ---- */
+/* ---- Nav: underline that travels, hides on scroll-down, progress bar ---- */
 .anim .nav.nav-hidden{clip-path:inset(0 0 100% 0)}
 .nav.nav-hidden:focus-within{clip-path:none}
 .nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;border-radius:2px;background:var(--accent);transform:scaleX(0);transform-origin:right;transition:transform .4s var(--ease-out)}
@@ -403,12 +392,6 @@ section[id],main[id]{scroll-margin-top:72px}
 [dir="rtl"] .nav-links a:hover::after,[dir="rtl"] .nav-links a.active::after{transform-origin:right}
 .nav-links a.active{color:var(--fg)}
 .nav-links a:nth-child(1){--i:0}.nav-links a:nth-child(2){--i:1}.nav-links a:nth-child(3){--i:2}.nav-links a:nth-child(4){--i:3}.nav-links a:nth-child(5){--i:4}
-@media (max-width:900px){
-  .nav-links.open a::after{display:none}
-  .anim .nav-links.open{animation:menuIn .35s var(--ease-out) both}
-  .anim .nav-links.open a{animation:fadeUp .5s var(--ease-out) both;animation-delay:calc(var(--i,0)*45ms + .05s)}
-}
-@keyframes menuIn{from{opacity:0;translate:0 -10px}}
 @keyframes fadeUp{from{opacity:0;translate:0 12px}}
 .progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:60;background:linear-gradient(90deg,var(--accent),var(--accent-2));transform-origin:left;transform:scaleX(var(--sp,0));pointer-events:none;display:none}
 [dir="rtl"] .progress{transform-origin:right}
@@ -447,19 +430,23 @@ section[id],main[id]{scroll-margin-top:72px}
 .service .num{transition:color .3s}
 .service:hover .num{color:var(--accent)}
 
-/* ---- Process: a line that fills as you scroll, dots light up per step ---- */
+/* ---- Process: a rail that fills as you scroll, dots light up per step (phones too, from the left) ---- */
 .steps{position:relative}
 .anim .step .n{color:var(--fg-3);transition:color .5s,translate .5s var(--ease-out)}
 .anim .step.is-active .n{color:var(--accent)}
 .step:hover .n{translate:6px 0}
 [dir="rtl"] .step:hover .n{translate:-6px 0}
-@media (min-width:800px){
-  .anim .step{position:relative;padding-inline-start:36px}
-  .anim .steps::before{content:"";position:absolute;top:0;bottom:0;inset-inline-start:0;width:2px;background:var(--line)}
-  .anim .steps::after{content:"";position:absolute;top:0;bottom:0;inset-inline-start:0;width:2px;background:linear-gradient(var(--accent),var(--accent-2));transform-origin:top;transform:scaleY(var(--p,0))}
-  .anim .step::before{content:"";position:absolute;inset-inline-start:-5px;top:40px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--line);transition:border-color .4s,background .4s,box-shadow .5s;z-index:1}
-  .anim .step.is-active::before{border-color:var(--accent);background:var(--accent);box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 22%,transparent)}
+.anim .step{position:relative;padding-inline-start:36px}
+.anim .steps::before{content:"";position:absolute;top:0;bottom:0;inset-inline-start:0;width:2px;background:var(--line)}
+.anim .steps::after{content:"";position:absolute;top:0;bottom:0;inset-inline-start:0;width:2px;background:linear-gradient(var(--accent),var(--accent-2));transform-origin:top;transform:scaleY(var(--p,0))}
+.anim .step::before{content:"";position:absolute;inset-inline-start:-5px;top:40px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--line);transition:border-color .4s,background .4s,box-shadow .5s;z-index:1}
+.anim .step.is-active::before{border-color:var(--accent);background:var(--accent);box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 22%,transparent)}
+@media (max-width:799px){
+  .anim .step{padding-inline-start:26px}
+  .anim .step::before{top:35px}
+  .anim .step.is-active::before{animation:dotPing .7s var(--ease-out)}
 }
+@keyframes dotPing{40%{scale:1.6}}
 
 /* ---- Work tiles: slow ambient drift, hover shine, arrow fill ---- */
 .anim .tile .art::before{animation:artDrift 20s ease-in-out infinite alternate;animation-play-state:paused}
@@ -552,9 +539,141 @@ section[id],main[id]{scroll-margin-top:72px}
 :root[data-vt="theme"]::view-transition-old(root),:root[data-vt="theme"]::view-transition-new(root){animation:none;mix-blend-mode:normal}
 :root[data-vt="theme"]::view-transition-new(root){z-index:1}
 
-/* ---- Sticky phone CTA eases in ---- */
-.anim .sticky-cta{animation:ctaIn .6s var(--ease-out) both 1.2s}
-@keyframes ctaIn{from{translate:0 110%}}
+/* =====================================================================================
+   Phones and small tablets: their own navigation, layout and motion
+   Up to 900px a floating dock replaces the top links and the old sticky bar: the pumpkin mark wears a
+   scroll-progress ring, the current section's name slides in as you move through the page, and the orange
+   CTA folds away once the contact section is on screen. Its menu button opens a bottom sheet (sections,
+   email, socials) that slides up, staggers its links in and closes with a swipe down, the scrim, Esc or ×.
+   Phones (up to 699px) also get a centred hero with a pumpkin you can spin and burst, service cards that
+   stack as you scroll, a 3D carousel with page dots for the work, mask reveals for headings, and press and
+   ripple feedback on touch. Desktop is untouched by everything below.
+   ===================================================================================== */
+.dock,.work-dots,.pk-hint{display:none}
+@media (max-width:900px){
+  html{scroll-padding-bottom:96px}
+  .anim .progress{display:none}
+  .dock{display:flex;align-items:center;gap:6px;position:fixed;z-index:45;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:560px;margin-inline:auto;height:64px;padding:6px;border-radius:999px;background:color-mix(in srgb,var(--bg-2) 86%,transparent);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);border:1px solid var(--line);box-shadow:0 22px 44px -20px rgba(0,0,0,.65)}
+}
+.dock-menu{flex:1;min-width:0;height:100%;display:flex;align-items:center;gap:10px;padding:0 14px 0 2px;border:0;border-radius:999px;background:none;color:var(--fg);font:inherit;text-align:start;cursor:pointer;-webkit-tap-highlight-color:transparent}
+html:not(.js) .dock-menu{display:none}
+.dock-ring{position:relative;width:50px;height:50px;flex:none;display:grid;place-items:center;transition:scale .25s var(--ease-out)}
+.dock-ring .ring{position:absolute;inset:0;width:100%;height:100%;rotate:-90deg}
+.dock-ring circle{fill:none;stroke-width:2.5}
+.dock-ring .track{stroke:var(--line)}
+.dock-ring .bar{stroke:var(--accent);stroke-linecap:round;stroke-dasharray:100px;stroke-dashoffset:calc(100px - var(--sp,0) * 100px)}
+.dock-ring .mark{width:26px;height:26px}
+.dock-label{display:grid;min-width:0;line-height:1.2;overflow:hidden}
+.dock-now{font-family:var(--font-display);font-size:16px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+[dir="rtl"] .dock-now{font-family:var(--font-display-ar);letter-spacing:0}
+.dock-idx{font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--fg-3);font-variant-numeric:tabular-nums}
+.dock-grip{width:20px;height:20px;margin-inline-start:auto;flex:none;color:var(--fg-2)}
+.dock-now.swap{animation:dockSwap .5s var(--ease-out)}
+@keyframes dockSwap{from{opacity:0;translate:0 80%}}
+.dock-cta{flex:none;height:100%;display:inline-flex;align-items:center;gap:8px;padding:0 20px;max-width:260px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:15px;font-weight:600;white-space:nowrap;position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent;transition:max-width .55s var(--ease-out),padding .55s var(--ease-out),opacity .3s,scale .2s var(--ease-out)}
+.dock-cta svg{width:16px;height:16px;flex:none}
+html:not(.js) .dock-cta{flex:1;max-width:none;justify-content:center}
+.dock.at-contact .dock-cta{max-width:0;padding-inline:0;opacity:0;pointer-events:none}
+.anim .dock{translate:0 170%;transition:translate .9s var(--ease-out) .5s}
+.anim.hero-in .dock{translate:0 0}
+
+/* bottom sheet */
+.sheet{position:fixed;inset:0;z-index:70}
+.sheet-scrim{position:absolute;inset:0;background:rgba(10,7,4,.55);opacity:0;transition:opacity .45s}
+.sheet.open .sheet-scrim{opacity:1}
+.sheet-panel{position:absolute;left:0;right:0;bottom:0;max-width:640px;margin-inline:auto;max-height:88vh;max-height:88dvh;overflow:auto;overscroll-behavior:contain;padding:8px max(20px,env(safe-area-inset-right,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));background:var(--bg-2);border:1px solid var(--line);border-bottom:0;border-radius:28px 28px 0 0;box-shadow:0 -30px 60px -24px rgba(0,0,0,.55);translate:0 105%;transition:translate .6s var(--ease-out)}
+.sheet.open .sheet-panel{translate:0 var(--drag,0px)}
+.sheet.dragging .sheet-panel{transition:none}
+.sheet-head{position:relative;display:flex;align-items:center;justify-content:space-between;padding:22px 0 14px;touch-action:none;cursor:grab}
+.sheet-head::before{content:"";position:absolute;top:2px;left:50%;width:42px;height:5px;margin-left:-21px;border-radius:5px;background:var(--line)}
+.sheet-x{width:44px;height:44px;padding:0}
+.sheet-links{display:grid;border-top:1px solid var(--line)}
+.sheet-links a{display:grid;grid-template-columns:46px 1fr auto;align-items:center;min-height:64px;padding:12px 2px;border-bottom:1px solid var(--line);font-family:var(--font-display);font-size:clamp(26px,8vw,34px);font-weight:600;letter-spacing:-.02em;line-height:1.1;-webkit-tap-highlight-color:transparent;transition:color .25s}
+[dir="rtl"] .sheet-links a{font-family:var(--font-display-ar);letter-spacing:0}
+.sheet-links .n{font-family:var(--font-body);font-size:12px;font-weight:600;letter-spacing:.12em;color:var(--fg-3);font-variant-numeric:tabular-nums}
+.sheet-links svg{width:20px;height:20px;color:var(--fg-3);transition:translate .3s var(--ease-out),color .25s}
+.sheet-links a.active,.sheet-links a.active .n,.sheet-links a.active svg{color:var(--accent)}
+.sheet-links a:active svg{translate:4px 0}
+[dir="rtl"] .sheet-links a:active svg{translate:-4px 0}
+.sheet-foot{display:grid;gap:12px;padding-top:22px}
+.sheet-foot .label{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3)}
+[dir="rtl"] .sheet-foot .label{letter-spacing:0}
+.sheet-mail{font-family:var(--font-display);font-size:22px;font-weight:600;letter-spacing:-.01em;color:var(--fg);justify-self:start}
+.sheet-socials{display:flex;gap:10px;flex-wrap:wrap}
+.sheet-socials a{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--bg);display:grid;place-items:center;color:var(--fg);transition:border-color .2s,scale .2s var(--ease-out)}
+.sheet-socials svg{width:18px;height:18px}
+.anim .sheet-links a,.anim .sheet-foot>*{opacity:0;translate:0 18px;transition:opacity .5s var(--ease-out),translate .65s var(--ease-out),color .25s}
+.anim .sheet.open .sheet-links a,.anim .sheet.open .sheet-foot>*{opacity:1;translate:0 0;transition-delay:calc(.12s + var(--i,0) * 55ms)}
+html.sheet-lock,html.sheet-lock body{overflow:hidden}
+@media (min-width:901px){.sheet{display:none}}
+
+/* touch: press feedback and a ripple from the finger on buttons */
+@media (hover:none){
+  .btn:active,.dock-cta:active,.socials a:active,.sheet-socials a:active{scale:.96}
+  .dock-menu:active .dock-ring{scale:.9}
+  .btn,.socials a,.chip{-webkit-tap-highlight-color:transparent}
+}
+.btn>.ripple,.dock-cta>.ripple{position:absolute;z-index:0;left:var(--kx);top:var(--ky);width:var(--kd);height:var(--kd);margin:calc(var(--kd) / -2) 0 0 calc(var(--kd) / -2);border-radius:50%;background:currentColor;opacity:.2;pointer-events:none;animation:ripple .65s var(--ease-out) forwards}
+.dock-cta>*:not(.ripple){position:relative;z-index:1}
+@keyframes ripple{from{transform:scale(0)}to{transform:scale(1);opacity:0}}
+
+/* the pumpkin's touch target and hint (placed over the pumpkin by the Three.js layout) */
+.pk-hit{position:absolute;z-index:3;border-radius:50%;touch-action:pan-y;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;display:none}
+@media (pointer:coarse){.anim .pk-hit{display:block}}
+.pk-hint{position:absolute;z-index:3;translate:-50% 0;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:color-mix(in srgb,var(--bg-2) 88%,transparent);color:var(--fg-2);font-size:12px;font-weight:600;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .6s,translate .6s var(--ease-out)}
+.pk-hint svg{width:15px;height:15px;color:var(--accent)}
+@media (pointer:coarse){.anim .pk-hint{display:inline-flex}}
+.pk-hint.show{opacity:1;translate:-50% -6px}
+.pk-hint.show svg{animation:swipeNudge 1.8s var(--ease-in-out) infinite}
+@keyframes swipeNudge{0%,100%{translate:-3px 0}50%{translate:3px 0}}
+
+@media (max-width:699px){
+  /* hero: the pumpkin owns a centred band, the copy is centred under it */
+  .hero{--band:clamp(250px,70vw,310px)}
+  html.js .hero .wrap{padding-top:var(--band)}
+  .hero .wrap{text-align:center;justify-items:center}
+  .hero-top{justify-content:center}
+  .hero-lede{margin-inline:auto}
+  .hero-cta{justify-content:center}
+  .hero-facts{grid-template-columns:repeat(3,1fr);width:100%}
+  .fact{padding:14px 8px}
+  .fact:last-child{grid-column:auto}
+  .fact b{font-size:22px}
+  .fact span{font-size:10.5px;letter-spacing:.06em}
+
+  /* services: each card sticks a little lower than the last, so they pile up as you scroll; covered cards
+     shrink and dim (--sd, set by the scroll engine) */
+  .service{position:sticky;top:calc(84px + var(--k,0) * 14px);transform-origin:50% 0;box-shadow:0 -14px 30px -18px rgba(0,0,0,.55)}
+  .service:nth-child(2){--k:1}.service:nth-child(3){--k:2}.service:nth-child(4){--k:3}
+  .anim .service-grid>.service.in{scale:calc(1 - var(--sd,0) * .07)}
+  .service>*{opacity:calc(1 - var(--sd,0) * .6)}
+
+  /* work: tiles snap to the centre, side tiles turn away and dim (--cr, --cs, --cd from the carousel code) */
+  .work-scroller{padding-inline:calc((100vw - min(78vw,320px)) / 2)}
+  .tile{scroll-snap-align:center}
+  .anim .work-grid{perspective:1100px}
+  .anim .work-scroller .tile,.anim .work-scroller .tile:hover{transform:rotateY(var(--cr,0deg)) scale(var(--cs,1))}
+  .anim .work-scroller .tile>*{opacity:calc(1 - var(--cd,0) * .5)}
+  .anim .work-grid.peek{animation:peek 1.3s var(--ease-in-out)}
+  [dir="rtl"] .anim .work-grid.peek{animation-name:peekRtl}
+  .js .work-dots{display:flex;justify-content:center;gap:6px;margin-top:20px}
+  .work-dots i{position:relative;display:block;height:6px;width:calc(6px + var(--a,0) * 18px);border-radius:6px;background:var(--line)}
+  .work-dots i::after{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--accent);opacity:var(--a,0)}
+  .swipe-hint{justify-content:center;transition:opacity .5s}
+  .swipe-hint.swiped{opacity:0}
+  .anim .swipe-hint svg{animation:swipeNudge 1.8s var(--ease-in-out) infinite}
+
+  /* headings rise out of a mask as one block (no per-word split on phones). The mask is a keyframe that starts
+     with .in: a clip-path on the hidden state would hide the heading from the reveal observer too */
+  .anim [data-stagger]>h2.in{animation:maskUp 1.05s var(--ease-out) both;animation-delay:calc(var(--i,0) * 85ms)}
+
+  /* process steps slide in from the rail's side */
+  .anim .steps>.step:not(.in){translate:-26px 0}
+  [dir="rtl"] .anim .steps>.step:not(.in){translate:26px 0}
+}
+@keyframes maskUp{from{clip-path:inset(0 0 100% 0);translate:0 45%}to{clip-path:inset(-20% -10% -35% -10%);translate:0 0}}
+@keyframes peek{35%{translate:-64px 0}70%{translate:6px 0}}
+@keyframes peekRtl{35%{translate:64px 0}70%{translate:-6px 0}}
 </style>
 </head>
 <body>
@@ -598,7 +717,6 @@ section[id],main[id]{scroll-margin-top:72px}
         <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
       </button>
       <a class="btn btn-primary" href="#contact" data-i18n="nav.cta">Start a project</a>
-      <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks" data-i18n="nav.menu">Menu</button>
     </div>
   </div>
 </header>
@@ -611,6 +729,8 @@ section[id],main[id]{scroll-margin-top:72px}
   <div class="glow glow-b" aria-hidden="true"></div>
   <div class="grid-bg" aria-hidden="true"></div>
   <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="pk-hit" id="pkHit" aria-hidden="true"></div>
+  <p class="pk-hint" id="pkHint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4"/></svg><span data-i18n="hero.hint">Swipe to spin · tap to burst</span></p>
   <div class="wrap">
     <div class="hero-top" data-reveal data-hero style="--i:0">
       <span class="pill"><span class="dot"></span><span data-i18n="hero.pill">Taking new clients for Q1 2027</span></span>
@@ -762,6 +882,7 @@ section[id],main[id]{scroll-margin-top:72px}
         <div class="meta"><span class="tag" data-i18n="w5.t">Videography</span><h3>Uncle Osaka</h3><p data-i18n="w5.p">Video production for Uncle Osaka.</p></div></a>
     </div>
     </div>
+    <div class="work-dots" id="workDots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <p class="swipe-hint"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span data-i18n="wk.swipe">Swipe to see more</span></p>
     <div class="work-more" data-reveal><a class="btn btn-ghost" href="https://www.behance.net/PumpkinGroup" target="_blank" rel="noopener"><span data-i18n="wk.more">See all projects on Behance</span>
       <svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></a></div>
@@ -851,7 +972,48 @@ section[id],main[id]{scroll-margin-top:72px}
   <div class="big" id="footBig" aria-hidden="true"><span>PUMPKIN</span></div>
 </footer>
 
-<div class="sticky-cta" id="stickyCta"><a class="btn btn-primary" href="#contact" data-i18n="nav.cta">Start a project</a></div>
+<!-- ============ DOCK + SHEET (up to 900px): progress ring, current section, CTA; the menu opens a bottom sheet ============ -->
+<div class="dock" id="dock">
+  <button class="dock-menu" id="dockMenu" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="sheet" aria-label="Menu">
+    <span class="dock-ring" aria-hidden="true">
+      <svg class="ring" viewBox="0 0 50 50"><circle class="track" cx="25" cy="25" r="22" pathLength="100"/><circle class="bar" cx="25" cy="25" r="22" pathLength="100"/></svg>
+      <svg class="mark" viewBox="0 0 32 32">
+        <path d="M16 6c1.2-2.4 2.6-3.6 4.4-3.8.4 1.6-.2 3.2-1.6 4.6" fill="none" stroke="var(--leaf)" stroke-width="2.4" stroke-linecap="round"/>
+        <ellipse cx="16" cy="18" rx="12.5" ry="10.5" fill="var(--accent)"/>
+        <path d="M16 7.5c-2.6 3-3.6 6.6-3.6 10.5s1 7.5 3.6 10.5M16 7.5c2.6 3 3.6 6.6 3.6 10.5s-1 7.5-3.6 10.5" fill="none" stroke="var(--accent-ink)" stroke-opacity=".35" stroke-width="1.6"/>
+      </svg>
+    </span>
+    <span class="dock-label" aria-hidden="true"><span class="dock-now" id="dockNow">Home</span><span class="dock-idx" id="dockIdx">01 / 06</span></span>
+    <svg class="dock-grip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 9h14M5 15h14"/></svg>
+  </button>
+  <a class="dock-cta" href="#contact"><span data-i18n="nav.cta">Start a project</span><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+</div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
+  <div class="sheet-scrim" data-close></div>
+  <div class="sheet-panel">
+    <div class="sheet-head" id="sheetHead">
+      <span class="eyebrow" id="sheetTitle" data-i18n="nav.menu">Menu</span>
+      <button class="icon-btn sheet-x" type="button" data-close><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span class="sr" data-i18n="sh.close">Close</span></button>
+    </div>
+    <nav class="sheet-links" id="sheetLinks">
+      <a href="#about" style="--i:0"><span class="n">01</span><span data-i18n="nav.about">About</span><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a href="#services" style="--i:1"><span class="n">02</span><span data-i18n="nav.services">Services</span><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a href="#process" style="--i:2"><span class="n">03</span><span data-i18n="nav.process">Process</span><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a href="#work" style="--i:3"><span class="n">04</span><span data-i18n="nav.work">Work</span><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a href="#contact" style="--i:4"><span class="n">05</span><span data-i18n="nav.contact">Contact</span><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </nav>
+    <div class="sheet-foot">
+      <span class="label" data-i18n="sh.hello" style="--i:5">Say hello</span>
+      <a class="sheet-mail" href="mailto:hello@pumpkinllc.com" dir="ltr" style="--i:6">hello@pumpkinllc.com</a>
+      <div class="sheet-socials" style="--i:7">
+        <a href="https://www.instagram.com/pumpkin.llc/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg><span class="sr" data-i18n="so.ig">Instagram</span></a>
+        <a href="https://www.facebook.com/Pumpkin.groupllc/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg><span class="sr" data-i18n="so.fb">Facebook</span></a>
+        <a href="https://www.linkedin.com/company/pumpkin-group-llc" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg><span class="sr" data-i18n="so.li">LinkedIn</span></a>
+        <a href="https://www.behance.net/PumpkinGroup" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h6a3 3 0 0 1 0 6H3zM3 12h7a3 3 0 0 1 0 6H3zM14 14h7a3.5 3.5 0 1 0-.5 2M15 6h5"/></svg><span class="sr" data-i18n="so.be">Behance</span></a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="cursor" id="cursor" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
 <div class="grain" aria-hidden="true"></div>
@@ -874,7 +1036,7 @@ section[id],main[id]{scroll-margin-top:72px}
     'hero.pill':'نستقبل عملاء جدد للربع الأول من 2027','hero.sub':'علامة تجارية · تسويق · إعلان · رقمي — عمّان، الأردن',
     'hero.h1':'نُنمّي علامات تجارية يتذكّرها الناس <span class="o">فعلاً</span>.',
     'hero.lede':'بامبكن وكالة تسويق متكاملة مقرّها عمّان. <strong>الاستراتيجية والهوية والحملات والرقمي</strong> تحت سقف واحد، لعلامات تجارية في الأردن والمنطقة تريد أن تتميّز وتبقى في الذاكرة.',
-    'hero.cta1':'ابدأ مشروعك','hero.cta2':'شاهد أعمالنا','hero.scroll':'مرّر','fact.1':'تأسست','fact.2b':'عمّان','fact.2':'خلدا، الأردن','fact.3':'تخصصات، فريق واحد',
+    'hero.cta1':'ابدأ مشروعك','hero.cta2':'شاهد أعمالنا','hero.scroll':'مرّر','hero.hint':'اسحب لتدويرها · انقر لتتناثر','fact.1':'تأسست','fact.2b':'عمّان','fact.2':'خلدا، الأردن','fact.3':'تخصصات، فريق واحد',
     'mq.1':'استراتيجية العلامة','mq.2':'الهوية البصرية','mq.3':'السوشيال ميديا','mq.4':'الحملات','mq.5':'شراء الإعلام','mq.6':'إنتاج المحتوى','mq.7':'المواقع والتطبيقات','mq.8':'التسويق بالأداء','mq.9':'التغليف','mq.10':'فعاليات الإطلاق',
     'about.eyebrow':'من نحن','about.h2':'فريق صغير بشهية كبيرة لعلامات تجارية لها معنى.',
     'about.p1':'انطلقت بامبكن في عمّان عام 2020 بفكرة بسيطة: يجب أن تبدو العلامة التجارية نفسها على لوحة إعلانية في شارع مكة كما تبدو في ريل مدته 15 ثانية. <strong>معظم الوكالات توزّع هذا العمل على أقسام متفرقة. نحن نبقيه في غرفة واحدة.</strong>',
@@ -907,10 +1069,11 @@ section[id],main[id]{scroll-margin-top:72px}
     'f.name':'اسمك','f.nameP':'رنا حدّاد','f.co':'الشركة','f.coP':'شركة حدّاد التجارية','f.email':'البريد الإلكتروني','f.need':'ما الذي تحتاجه؟','f.o1':'علامة تجارية وهوية','f.o2':'تسويق وسوشيال ميديا','f.o3':'حملة إعلانية','f.o4':'موقع أو منتج رقمي','f.o5':'لست متأكداً بعد، لنتحدث',
     'f.budget':'الميزانية التقريبية (دينار أردني)','f.b1':'أقل من 5 آلاف','f.b2':'5 إلى 15 ألفاً','f.b3':'15 إلى 50 ألفاً','f.b4':'أكثر من 50 ألفاً','f.msg':'أخبرنا عن المشروع','f.msgP':'ما الذي تطلقه، ولمن، ومتى يجب أن يكون جاهزاً؟','f.send':'أرسل الاستفسار','f.note':'نرد خلال يوم عمل واحد.',
     'f.thanks':'شكراً يا','f.okP':'وصلنا استفسارك وسنتواصل معك خلال يوم عمل واحد. في هذه الأثناء، ألقِ نظرة على إنستغرام لمشاهدة أحدث أعمالنا.','f.again':'أرسل استفساراً آخر',
-    'ft.1':'© 2026 بامبكن جروب ذ.م.م · عمّان، الأردن','ft.2':'علامة تجارية · تسويق · إعلان · رقمي'
+    'ft.1':'© 2026 بامبكن جروب ذ.م.م · عمّان، الأردن','ft.2':'علامة تجارية · تسويق · إعلان · رقمي',
+    'sh.close':'إغلاق','sh.hello':'قل مرحباً'
   };
-  var MSG={en:{err:'Add your name and a valid email so we can reply.',copied:'Copied',select:'Select to copy',close:'Close',menu:'Menu',lang:'عربي',langLabel:'Switch to Arabic'},
-           ar:{err:'أضف اسمك وبريداً إلكترونياً صالحاً حتى نتمكن من الرد.',copied:'تم النسخ',select:'حدّد النص للنسخ',close:'إغلاق',menu:'القائمة',lang:'EN',langLabel:'التبديل إلى الإنجليزية'}};
+  var MSG={en:{err:'Add your name and a valid email so we can reply.',copied:'Copied',select:'Select to copy',menu:'Menu',home:'Home',lang:'عربي',langLabel:'Switch to Arabic'},
+           ar:{err:'أضف اسمك وبريداً إلكترونياً صالحاً حتى نتمكن من الرد.',copied:'تم النسخ',select:'حدّد النص للنسخ',menu:'القائمة',home:'الرئيسية',lang:'EN',langLabel:'التبديل إلى الإنجليزية'}};
   var EN={}, ENP={};
   var nodes=document.querySelectorAll('[data-i18n]'), phNodes=document.querySelectorAll('[data-i18n-ph]');
   nodes.forEach(function(el){ var k=el.getAttribute('data-i18n'); if(!(k in EN)) EN[k]=el.innerHTML; });
@@ -943,8 +1106,9 @@ section[id],main[id]{scroll-margin-top:72px}
     return idx;
   }
   function splitAll(){
-    if(!anim||!fine) return;   /* word masks on fine-pointer devices only; phones reveal each heading as one block */
-    document.querySelectorAll(SPLIT_SEL).forEach(function(h){ if(h.querySelector('.w')) return; wrapWords(h,'w','wi','--w'); h.classList.add('split'); });
+    if(!anim) return;   /* word masks on every heading with a fine pointer; touch devices split only the hero headline
+                           and reveal the other headings as one masked block */
+    document.querySelectorAll(fine?SPLIT_SEL:'.hero h1').forEach(function(h){ if(h.querySelector('.w')) return; wrapWords(h,'w','wi','--w'); h.classList.add('split'); });
   }
   var quoteEl=document.getElementById('quote'), qCount=0;
   function setupQuote(){ if(!anim||!quoteEl) return; if(!quoteEl.querySelector('.qw')) qCount=wrapWords(quoteEl,'qw',null,'--i'); }
@@ -957,9 +1121,8 @@ section[id],main[id]{scroll-margin-top:72px}
     root.setAttribute('lang', l); root.setAttribute('dir', l==='ar'?'rtl':'ltr');
     document.title = l==='ar' ? 'بامبكن جروب' : 'Pumpkin Group';
     var lb=document.getElementById('langBtn'); lb.textContent=MSG[l].lang; lb.setAttribute('aria-label',MSG[l].langLabel);
-    if(menuBtn.getAttribute('aria-expanded')==='true') menuBtn.textContent=MSG[l].close;
     try{localStorage.setItem('pk-lang',l);}catch(e){}
-    rebuildMarquee(); splitAll(); setupQuote();
+    rebuildMarquee(); splitAll(); setupQuote(); setDock(current,true);
     if(typeof onScroll==='function') requestAnimationFrame(onScroll);
   }
 
@@ -991,11 +1154,64 @@ section[id],main[id]{scroll-margin-top:72px}
     if(vt&&vt.ready){ vt.ready.then(function(){ try{ root.animate({clipPath:['circle(0px at '+x+'px '+y+'px)','circle('+R+'px at '+x+'px '+y+'px)']},{duration:650,easing:'cubic-bezier(.65,0,.35,1)',pseudoElement:'::view-transition-new(root)'}); }catch(e){} },function(){}); }
   });
 
-  /* ---------------- nav ---------------- */
-  var nav=document.getElementById('nav'), links=document.getElementById('navLinks'), menuBtn=document.getElementById('menuBtn');
-  function closeMenu(){ links.classList.remove('open'); menuBtn.setAttribute('aria-expanded','false'); menuBtn.textContent=MSG[lang].menu; }
-  menuBtn.addEventListener('click',function(){ var open=links.classList.toggle('open'); menuBtn.setAttribute('aria-expanded',String(open)); menuBtn.textContent=open?MSG[lang].close:MSG[lang].menu; });
-  links.addEventListener('click',function(e){ if(e.target.tagName==='A') closeMenu(); });
+  /* ---------------- nav, dock and sheet ----------------
+     Up to 900px the dock carries the navigation: its button names the current section (set by the scroll spy)
+     and opens the sheet. The sheet is a modal dialog: the page behind is inert and cannot scroll, focus moves in
+     and back out, Tab wraps, and Esc, the scrim, × or a swipe down on its header close it. */
+  var nav=document.getElementById('nav'), links=document.getElementById('navLinks');
+  var dock=document.getElementById('dock'), dockMenu=document.getElementById('dockMenu'), dockNow=document.getElementById('dockNow'), dockIdx=document.getElementById('dockIdx');
+  var sheet=document.getElementById('sheet'), sheetHead=document.getElementById('sheetHead'), sheetLinks=[].slice.call(document.querySelectorAll('#sheetLinks a'));
+  var SECTIONS=['hero','about','services','process','work','contact'], current='', sheetT=0, sheetFrom=null;
+  function pad2(n){ return (n<10?'0':'')+n; }
+  function setDock(id,force){
+    if(id===current&&!force) return;
+    var changed=id!==current; current=id;
+    var a=links.querySelector('a[href="#'+id+'"]');
+    dockNow.textContent=id==='hero'?MSG[lang].home:(a?a.textContent:'');
+    dockIdx.textContent='\u2066'+pad2(SECTIONS.indexOf(id)+1)+' / '+pad2(SECTIONS.length)+'\u2069';   /* isolated so RTL keeps 01 / 06 */
+    dockMenu.setAttribute('aria-label',MSG[lang].menu);
+    sheetLinks.forEach(function(l){ l.classList.toggle('active',l.getAttribute('href')==='#'+id); });
+    if(changed&&anim){ dockNow.classList.remove('swap'); void dockNow.offsetWidth; dockNow.classList.add('swap'); }
+  }
+  setDock('hero');
+  function setInert(on){ [nav,document.getElementById('top'),document.querySelector('footer'),dock].forEach(function(el){ if(!el) return; if(on) el.setAttribute('inert',''); else el.removeAttribute('inert'); }); }
+  function openSheet(){
+    if(!sheet.hidden&&sheet.classList.contains('open')) return;
+    clearTimeout(sheetT); sheetFrom=document.activeElement;
+    sheet.style.removeProperty('--drag'); sheet.hidden=false; root.classList.add('sheet-lock'); setInert(true);
+    dockMenu.setAttribute('aria-expanded','true');
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ sheet.classList.add('open'); }); });
+    var x=sheet.querySelector('.sheet-x'); if(x) x.focus({preventScroll:true});
+  }
+  function closeSheet(toLink){
+    if(sheet.hidden) return;
+    sheet.classList.remove('open'); root.classList.remove('sheet-lock'); setInert(false);
+    dockMenu.setAttribute('aria-expanded','false');
+    clearTimeout(sheetT); sheetT=setTimeout(function(){ if(!sheet.classList.contains('open')) sheet.hidden=true; },620);
+    if(!toLink&&sheetFrom&&sheetFrom.focus) sheetFrom.focus({preventScroll:true});
+  }
+  dockMenu.addEventListener('click',openSheet);
+  sheet.addEventListener('click',function(e){
+    if(e.target.closest('a[href^="#"]')){ navForce=performance.now()+1500; closeSheet(true); return; }   /* the anchor then scrolls as usual */
+    if(e.target.closest('[data-close]')) closeSheet();
+  });
+  document.addEventListener('keydown',function(e){
+    if(sheet.hidden) return;
+    if(e.key==='Escape'){ closeSheet(); return; }
+    if(e.key==='Tab'){
+      var f=[].slice.call(sheet.querySelectorAll('a[href],button')), i=f.indexOf(document.activeElement);
+      if(e.shiftKey&&i<=0){ e.preventDefault(); f[f.length-1].focus(); }
+      else if(!e.shiftKey&&i===f.length-1){ e.preventDefault(); f[0].focus(); }
+    }
+  });
+  window.addEventListener('resize',function(){ if(window.innerWidth>900) closeSheet(true); },{passive:true});
+  /* swipe down on the header to close: the panel follows the finger (resisting upward pulls) and closes past
+     110px or on a quick flick; otherwise it springs back */
+  var dragY=0, dragDy=0, dragT=0, dragging=false;
+  sheetHead.addEventListener('pointerdown',function(e){ if(e.target.closest('button')) return; dragging=true; dragY=e.clientY; dragDy=0; dragT=performance.now(); sheet.classList.add('dragging'); try{ sheetHead.setPointerCapture(e.pointerId); }catch(err){} });
+  sheetHead.addEventListener('pointermove',function(e){ if(!dragging) return; dragDy=e.clientY-dragY; sheet.style.setProperty('--drag',(dragDy>0?dragDy:dragDy*.2).toFixed(1)+'px'); });
+  function endDrag(){ if(!dragging) return; dragging=false; sheet.classList.remove('dragging'); var v=dragDy/Math.max(1,performance.now()-dragT); if(dragDy>110||(dragDy>24&&v>.5)) closeSheet(); else sheet.style.setProperty('--drag','0px'); }
+  sheetHead.addEventListener('pointerup',endDrag); sheetHead.addEventListener('pointercancel',endDrag);
 
   /* ---------------- marquee ---------------- */
   /* Under .anim the track is moved by JS: a base speed that rises with scroll velocity, plus a slight skew in the
@@ -1035,10 +1251,30 @@ section[id],main[id]{scroll-margin-top:72px}
   if(startLang==='ar') setLang('ar'); else { document.getElementById('langBtn').setAttribute('aria-label',MSG.en.langLabel); }
   document.getElementById('langBtn').addEventListener('click',function(){ withTransition('lang',function(){ setLang(lang==='ar'?'en':'ar'); }); });
 
-  /* ---------------- sticky phone CTA: hide once the contact section is on screen ---------------- */
-  var sticky=document.getElementById('stickyCta'), contact=document.getElementById('contact');
+  /* ---------------- in-page links land where they should ----------------
+     Sections below the hero use content-visibility, so until they render they are laid out at an estimated
+     height and a long smooth scroll can stop short of its target. The browser still follows the link (hash,
+     focus and all); once the page stops moving, the target is re-aimed if it is more than a few pixels off. */
+  var settleIv=0;
+  function settleOn(t){
+    var tries=0, last=-1, still=0; clearInterval(settleIv);
+    settleIv=setInterval(function(){
+      var y=window.scrollY; if(Math.abs(y-last)<1) still++; else { still=0; last=y; }
+      if(still<3) return;
+      var off=t.getBoundingClientRect().top-(parseFloat(getComputedStyle(t).scrollMarginTop)||0);
+      var atEnd=window.innerHeight+y>=document.documentElement.scrollHeight-2;
+      if(Math.abs(off)>4&&!atEnd&&tries++<3){ still=0; window.scrollBy({top:off,behavior:reduce?'auto':'smooth'}); } else clearInterval(settleIv);
+    },90);
+  }
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href^="#"]'), t=a&&a.getAttribute('href').length>1?document.getElementById(a.getAttribute('href').slice(1)):null;
+    if(t) settleOn(t);
+  });
+
+  /* ---------------- dock CTA: folds away once the contact section is on screen ---------------- */
+  var contact=document.getElementById('contact');
   if('IntersectionObserver' in window){
-    new IntersectionObserver(function(en){ sticky.classList.toggle('away', en[0].isIntersecting); },{threshold:.15}).observe(contact);
+    new IntersectionObserver(function(en){ dock.classList.toggle('at-contact', en[0].isIntersecting); },{threshold:.15}).observe(contact);
   }
 
   /* ---------------- copy email ---------------- */
@@ -1113,11 +1349,11 @@ section[id],main[id]{scroll-margin-top:72px}
     document.querySelectorAll('[data-reveal]:not([data-hero]),[data-stagger]>*').forEach(function(el){ revealIO.observe(el); });
   }
 
-  /* ---------------- scroll spy ---------------- */
+  /* ---------------- scroll spy (nav underline, dock label, sheet highlight) ---------------- */
   var navAnchors=[].slice.call(links.querySelectorAll('a[href^="#"]'));
-  if(anim){
+  if('IntersectionObserver' in window){
     var spyIO=new IntersectionObserver(function(entries){
-      entries.forEach(function(e){ if(!e.isIntersecting) return; var id=e.target.id; navAnchors.forEach(function(a){ a.classList.toggle('active',a.getAttribute('href')==='#'+id); }); });
+      entries.forEach(function(e){ if(!e.isIntersecting) return; var id=e.target.id; navAnchors.forEach(function(a){ a.classList.toggle('active',a.getAttribute('href')==='#'+id); }); setDock(id); });
     },{rootMargin:'-40% 0px -55% 0px',threshold:0});
     ['hero','about','services','process','work','contact'].forEach(function(id){ var el=document.getElementById(id); if(el) spyIO.observe(el); });
   }
@@ -1125,17 +1361,20 @@ section[id],main[id]{scroll-margin-top:72px}
   /* ---------------- scroll engine ----------------
      One rAF-throttled handler drives: nav state (scrolled / hidden on scroll-down), the progress bar, the hero
      parallax (--hp, also read by the Three.js loop), the process line (--p) and active steps, the scroll-lit
-     quote (--n), the footer word (--fp) and the work-tile art parallax (--py). Section trackers only run while
+     quote (--n), the footer word (--fp), the work-tile art parallax (--py), the dock's progress ring (--sp) and,
+     on phones, how far each service card is covered by the next one (--sd). Section trackers only run while
      their element is near the viewport, so the handler stays cheap. */
   var hero=document.getElementById('hero'), progressEl=document.getElementById('progress'), stepsEl=document.getElementById('steps'), footBig=document.getElementById('footBig');
   var stepEls=[].slice.call(document.querySelectorAll('.step')), tileEls=[].slice.call(document.querySelectorAll('.tile'));
+  var serviceGrid=document.querySelector('.service-grid'), serviceEls=[].slice.call(document.querySelectorAll('.service'));
   var lastY=window.scrollY, navForce=0, heroScroll=0, scrollTicking=false;
-  var near={steps:false,quote:false,foot:false}, tilesNear=[];
+  var near={steps:false,quote:false,foot:false,services:false}, tilesNear=[];
   if(anim){
     var nearIO=new IntersectionObserver(function(entries){ entries.forEach(function(e){ var k=e.target.getAttribute('data-track'); if(k) near[k]=e.isIntersecting; }); onScroll(); },{rootMargin:'25% 0px 25% 0px'});
     if(stepsEl){ stepsEl.setAttribute('data-track','steps'); nearIO.observe(stepsEl); }
     if(quoteEl){ quoteEl.setAttribute('data-track','quote'); nearIO.observe(quoteEl); }
     if(footBig){ footBig.setAttribute('data-track','foot'); nearIO.observe(footBig); }
+    if(serviceGrid){ serviceGrid.setAttribute('data-track','services'); nearIO.observe(serviceGrid); }
     var tileIO=new IntersectionObserver(function(entries){ entries.forEach(function(e){ e.target.classList.toggle('is-on',e.isIntersecting); var i=tilesNear.indexOf(e.target); if(e.isIntersecting&&i<0) tilesNear.push(e.target); else if(!e.isIntersecting&&i>=0) tilesNear.splice(i,1); }); onScroll(); },{rootMargin:'10% 0px'});
     /* .is-on lets the stylesheet pause the hero glows, the pill ping and the band ring while they are off screen */
     var onIO=new IntersectionObserver(function(entries){ entries.forEach(function(e){ e.target.classList.toggle('is-on',e.isIntersecting); }); },{rootMargin:'10% 0px'});
@@ -1143,20 +1382,21 @@ section[id],main[id]{scroll-margin-top:72px}
     tileEls.forEach(function(t){ tileIO.observe(t); });
   }
   function onScroll(){
-    var y=window.scrollY, vh=window.innerHeight, dy=y-lastY; lastY=y;
+    var y=window.scrollY, vh=window.innerHeight, vw=window.innerWidth, dy=y-lastY; lastY=y;
     nav.classList.toggle('scrolled',y>8);
     root.classList.toggle('is-scrolled',y>40);
+    var docH=document.documentElement.scrollHeight-vh, sp=(docH>0?clamp01(y/docH):0).toFixed(4);
+    if(vw<=900) dock.style.setProperty('--sp',sp);
     if(anim){
-      var menuOpen=links.classList.contains('open');
-      if(dy>4&&y>180&&!menuOpen&&performance.now()>navForce) nav.classList.add('nav-hidden');
+      if(dy>4&&y>180&&sheet.hidden&&performance.now()>navForce) nav.classList.add('nav-hidden');
       else if(dy<-4||y<=180) nav.classList.remove('nav-hidden');
-      var docH=document.documentElement.scrollHeight-vh;
-      if(progressEl) progressEl.style.setProperty('--sp',(docH>0?clamp01(y/docH):0).toFixed(4));
+      if(progressEl) progressEl.style.setProperty('--sp',sp);
       heroScroll=clamp01(y/Math.max(1,window.innerWidth<1000?320:hero.offsetHeight*0.9)); hero.style.setProperty('--hp',heroScroll.toFixed(3));
       if(near.steps&&stepsEl){ var r=stepsEl.getBoundingClientRect(), line=vh*0.62; stepsEl.style.setProperty('--p',clamp01((line-r.top)/Math.max(1,r.height)).toFixed(3)); stepEls.forEach(function(s){ s.classList.toggle('is-active',s.getBoundingClientRect().top<line); }); }
       if(near.quote&&quoteEl&&qCount){ var q=quoteEl.getBoundingClientRect(), qs=vh*0.92, qe=vh*0.42; var qp=clamp01((qs-q.top)/Math.max(1,(qs-qe)+q.height*0.6)); quoteEl.style.setProperty('--n',(qp*qCount*1.15).toFixed(2)); }
       if(near.foot&&footBig){ var f=footBig.getBoundingClientRect(); footBig.style.setProperty('--fp',clamp01((vh-f.top)/Math.max(1,f.height)).toFixed(3)); }
-      if(tilesNear.length&&window.innerWidth>=700){ tilesNear.forEach(function(t){ var tr=t.getBoundingClientRect(), ratio=((tr.top+tr.height/2)-vh/2)/vh, art=t.firstElementChild; if(art) art.style.setProperty('--py',(ratio*tr.height*0.07).toFixed(1)+'px'); }); }
+      if(near.services&&vw<700){ for(var k=0;k<serviceEls.length-1;k++){ var a=serviceEls[k].getBoundingClientRect(), b=serviceEls[k+1].getBoundingClientRect(); serviceEls[k].style.setProperty('--sd',clamp01((a.bottom-b.top)/Math.max(1,a.height)).toFixed(3)); } }
+      if(tilesNear.length&&vw>=700){ tilesNear.forEach(function(t){ var tr=t.getBoundingClientRect(), ratio=((tr.top+tr.height/2)-vh/2)/vh, art=t.firstElementChild; if(art) art.style.setProperty('--py',(ratio*tr.height*0.07).toFixed(1)+'px'); }); }
     }
     scrollTicking=false;
   }
@@ -1174,7 +1414,7 @@ section[id],main[id]{scroll-margin-top:72px}
       card.addEventListener('pointerleave',function(){ card.style.setProperty('--rx','0deg'); card.style.setProperty('--ry','0deg'); });
     });
     document.querySelectorAll('.btn').forEach(function(b){
-      if(b.closest('.form')||b.closest('.sticky-cta')) return;
+      if(b.closest('.form')) return;
       b.addEventListener('pointermove',function(e){ var r=b.getBoundingClientRect(), dx=e.clientX-(r.left+r.width/2), dy=e.clientY-(r.top+r.height/2); b.style.transform='translate('+(dx*.22).toFixed(1)+'px,'+(dy*.32).toFixed(1)+'px)'; },{passive:true});
       b.addEventListener('pointerleave',function(){ b.style.transform=''; });
     });
@@ -1201,12 +1441,64 @@ section[id],main[id]{scroll-margin-top:72px}
     }
   }
 
+  /* ---------------- phone work carousel ----------------
+     Under 700px the tiles snap to the centre of the row. As it scrolls, each tile turns away, shrinks and dims
+     by its distance from the centre (--cr, --cs, --cd; motion only) and the page dots stretch toward the
+     nearest tile (--a). The first time the row is in view it peeks at the next tile, unless it was swiped. */
+  var scroller=document.querySelector('.work-scroller'), workGrid=document.querySelector('.work-grid');
+  var dots=[].slice.call(document.querySelectorAll('#workDots i')), swipeHint=document.querySelector('.swipe-hint'), cfTick=false, swiped=false;
+  function carousel(){
+    cfTick=false;
+    if(window.innerWidth>=700) return;
+    var sr=scroller.getBoundingClientRect(), mid=sr.left+sr.width/2, sign=root.getAttribute('dir')==='rtl'?-1:1, fi=0, best=1e9;
+    tileEls.forEach(function(t,i){
+      var r=t.getBoundingClientRect(), d=(r.left+r.width/2-mid)/Math.max(1,r.width+12), ad=Math.min(1.5,Math.abs(d));
+      if(anim){ t.style.setProperty('--cr',(Math.max(-1.5,Math.min(1.5,d))*-16).toFixed(2)+'deg'); t.style.setProperty('--cs',(1-ad*.08).toFixed(3)); t.style.setProperty('--cd',Math.min(1,ad).toFixed(3)); }
+      if(Math.abs(d)<best){ best=Math.abs(d); fi=i-sign*d; }
+    });
+    dots.forEach(function(dt,i){ dt.style.setProperty('--a',Math.max(0,1-Math.abs(i-fi)).toFixed(3)); });
+  }
+  function carouselSoon(){ if(!cfTick){ cfTick=true; requestAnimationFrame(carousel); } }
+  if(scroller&&workGrid){
+    scroller.addEventListener('scroll',carouselSoon,{passive:true});
+    window.addEventListener('resize',carouselSoon,{passive:true});
+    new MutationObserver(carouselSoon).observe(root,{attributes:true,attributeFilter:['dir']});
+    var markSwiped=function(){ if(swiped) return; swiped=true; if(swipeHint) swipeHint.classList.add('swiped'); };
+    scroller.addEventListener('pointerdown',markSwiped,{passive:true});
+    scroller.addEventListener('touchstart',markSwiped,{passive:true});
+    carouselSoon();
+    if('IntersectionObserver' in window){
+      var peeked=false;
+      new IntersectionObserver(function(en){
+        if(!en[0].isIntersecting) return;
+        carouselSoon();
+        if(peeked||!anim) return; peeked=true;
+        setTimeout(function(){
+          if(swiped||window.innerWidth>=700||Math.abs(scroller.scrollLeft)>4) return;
+          workGrid.classList.add('peek');
+          workGrid.addEventListener('animationend',function(){ workGrid.classList.remove('peek'); },{once:true});
+        },1100);
+      },{threshold:.6}).observe(scroller);
+    }
+  }
+
+  /* ---------------- touch ripple: a ring spreads from the finger on buttons and the dock CTA ---------------- */
+  if(anim) document.addEventListener('pointerdown',function(e){
+    if(e.pointerType!=='touch'||!e.target.closest) return;
+    var b=e.target.closest('.btn,.dock-cta'); if(!b||b.classList.contains('is-sending')) return;
+    var r=b.getBoundingClientRect(), sp=document.createElement('span');
+    sp.className='ripple'; sp.setAttribute('aria-hidden','true');
+    sp.style.setProperty('--kx',(e.clientX-r.left).toFixed(0)+'px'); sp.style.setProperty('--ky',(e.clientY-r.top).toFixed(0)+'px'); sp.style.setProperty('--kd',Math.ceil(Math.max(r.width,r.height)*2.2)+'px');
+    b.appendChild(sp); setTimeout(function(){ if(sp.parentNode) sp.parentNode.removeChild(sp); },700);
+  },{passive:true});
+
   /* ---------------- Three.js hero: particle pumpkin ----------------
      Budget: one Points draw call + one ring, DPR capped at 1.5, 2.5k points on phones / 6k on desktop,
      render loop runs only while the hero is on screen and the tab is visible; reduced-motion gets a single frame.
      Motion (html.anim only): the points assemble from a scattered cloud when the hero enters, dissolve back into
-     it as the hero scrolls away, and part around the cursor on desktop. The position buffer is re-uploaded only
-     while one of those is actually changing. */
+     it as the hero scrolls away, and part around the cursor on desktop or the finger on touch. A click or tap
+     bursts the pumpkin (a spring per point, so it overshoots and wobbles back), and on touch a sideways swipe
+     spins it with inertia. The position buffer is re-uploaded only while one of those is actually changing. */
   function cssColor(name){ return getComputedStyle(root).getPropertyValue(name).trim(); }
   function initHero(){
     if(!window.THREE) return;
@@ -1283,6 +1575,7 @@ section[id],main[id]{scroll-margin-top:72px}
     if(window.matchMedia){ var mql=window.matchMedia('(prefers-color-scheme: light)'); if(mql.addEventListener) mql.addEventListener('change',applyColors); }
 
     var W=1,H=1, rtl=false, wrapEl=hero.querySelector('.wrap'), baseScale=1, baseY=0;
+    var pk={x:0,y:0,r:0}, hit=document.getElementById('pkHit'), hint=document.getElementById('pkHint');
     function layout(){
       W=hero.clientWidth; H=hero.clientHeight;
       renderer.setSize(W,H,false);
@@ -1294,7 +1587,12 @@ section[id],main[id]{scroll-margin-top:72px}
       var cs=getComputedStyle(wrapEl), padL=parseFloat(cs.paddingLeft)||0, padR=parseFloat(cs.paddingRight)||0;
       var cLeft=wr.left-hr.left+padL, cRight=wr.right-hr.left-padR, cw=cRight-cLeft;
       var cxPx, cyPx, rPx;
-      if(W<1000){ /* phone and tablet: the pumpkin owns the reserved band above the headline */
+      if(window.innerWidth<700){ /* phone: centred in the band above the centred copy */
+        var pband=parseFloat(cs.paddingTop)||260;
+        rPx=Math.min(pband*0.38, cw*0.4);
+        cyPx=(wr.top-hr.top)+pband*0.48;
+        cxPx=(cLeft+cRight)/2;
+      } else if(W<1000){ /* tablet: the pumpkin owns the reserved band above the headline, on the end side */
         var band=parseFloat(cs.paddingTop)||200;
         rPx=Math.min(band*0.44, cw*0.36);
         cyPx=(wr.top-hr.top)+band*0.5;
@@ -1307,6 +1605,9 @@ section[id],main[id]{scroll-margin-top:72px}
       group.position.set((cxPx-W/2)*upp, (H/2-cyPx)*upp, 0);
       baseY=group.position.y; baseScale=rPx*upp/2.05;
       group.scale.setScalar(baseScale);
+      pk.x=cxPx; pk.y=cyPx; pk.r=rPx;
+      if(hit){ var hs=rPx*2.3; hit.style.cssText='left:'+(cxPx-hs/2).toFixed(0)+'px;top:'+(cyPx-hs/2).toFixed(0)+'px;width:'+hs.toFixed(0)+'px;height:'+hs.toFixed(0)+'px'; }
+      if(hint){ hint.style.left=cxPx.toFixed(0)+'px'; hint.style.top=(cyPx+rPx*1.02+6).toFixed(0)+'px'; }
     }
     layout();
     if('ResizeObserver' in window) new ResizeObserver(layout).observe(hero); else window.addEventListener('resize',layout);
@@ -1321,14 +1622,58 @@ section[id],main[id]{scroll-margin-top:72px}
     var mix=anim?1:0, mixShown=-1, introT=-1, INTRO=2200, dispActive=false, pointerIn=false, px=0, py=0;
     var rayO=new THREE.Vector3(), rayD=new THREE.Vector3(), rayP=new THREE.Vector3();
     onHeroIn(function(){ introT=performance.now(); start(); });
+    function aim(clientX,clientY){ var r=hero.getBoundingClientRect(); px=((clientX-r.left)/Math.max(1,W))*2-1; py=-(((clientY-r.top)/Math.max(1,H))*2-1); }
+    function onPumpkin(clientX,clientY){ var r=hero.getBoundingClientRect(), dx=clientX-r.left-pk.x, dy=clientY-r.top-pk.y; return dx*dx+dy*dy<pk.r*pk.r*1.2; }
     if(anim&&fine&&!phone){
-      hero.addEventListener('pointermove',function(e){ var r=hero.getBoundingClientRect(); px=((e.clientX-r.left)/Math.max(1,W))*2-1; py=-(((e.clientY-r.top)/Math.max(1,H))*2-1); pointerIn=true; },{passive:true});
+      hero.addEventListener('pointermove',function(e){ aim(e.clientX,e.clientY); pointerIn=true; hero.style.cursor=heroScroll<0.3&&onPumpkin(e.clientX,e.clientY)?'pointer':''; },{passive:true});
       hero.addEventListener('pointerleave',function(){ pointerIn=false; });
+    }
+    /* burst: every point gets a kick away from the tap ray and out from the centre, strongest near the tap;
+       kick/kvel are a damped spring per point (see frame) */
+    var kick=new Float32Array(N*3), kvel=new Float32Array(N*3), kickOn=false, spinA=0, spinV=0, lastNow=0;
+    function burst(){
+      if(mix>0.5) return;
+      rayP.set(px,py,0.5).unproject(camera); rayO.copy(camera.position);
+      group.updateMatrixWorld(); group.worldToLocal(rayO); group.worldToLocal(rayP);
+      rayD.copy(rayP).sub(rayO).normalize();
+      for(var i=0;i<N;i++){
+        var i3=i*3, ox=pos[i3]-rayO.x, oy=pos[i3+1]-rayO.y, oz=pos[i3+2]-rayO.z, al=ox*rayD.x+oy*rayD.y+oz*rayD.z;
+        var qx=ox-rayD.x*al, qy=oy-rayD.y*al, qz=oz-rayD.z*al, dist=Math.sqrt(qx*qx+qy*qy+qz*qz)+1e-4;
+        var pl=Math.sqrt(pos[i3]*pos[i3]+pos[i3+1]*pos[i3+1]+pos[i3+2]*pos[i3+2])+1e-4;
+        var f=Math.max(0,1-dist/3.2); f=(0.06+0.26*f*f)*(0.75+Math.random()*0.5);
+        kvel[i3]+=(qx/dist*0.55+pos[i3]/pl*0.45)*f; kvel[i3+1]+=(qy/dist*0.55+pos[i3+1]/pl*0.45)*f; kvel[i3+2]+=(qz/dist*0.55+pos[i3+2]/pl*0.45)*f;
+      }
+      kickOn=true; spinV+=(Math.random()<.5?-1:1)*0.05; markPlayed();
+      if(navigator.vibrate){ try{ navigator.vibrate(12); }catch(err){} }
+    }
+    if(anim&&fine){
+      hero.addEventListener('click',function(e){ if(e.target.closest('a,button')||heroScroll>=0.3||!onPumpkin(e.clientX,e.clientY)) return; aim(e.clientX,e.clientY); burst(); });
+    }
+    /* touch: the target over the pumpkin keeps vertical swipes for the page (touch-action: pan-y); a sideways
+       swipe spins the pumpkin and the finger parts the points, a quick tap bursts it */
+    var played=false;
+    try{ played=!!sessionStorage.getItem('pk-played'); }catch(e){}
+    function markPlayed(){ if(hint) hint.classList.remove('show'); if(played) return; played=true; try{ sessionStorage.setItem('pk-played','1'); }catch(e){} }
+    if(anim&&hit){
+      var down=false, tT=0, tX=0, tY=0, lastX=0, moved=0;
+      hit.addEventListener('pointerdown',function(e){ down=true; tT=performance.now(); tX=lastX=e.clientX; tY=e.clientY; moved=0; spinV=0; aim(e.clientX,e.clientY); pointerIn=true; markPlayed(); try{ hit.setPointerCapture(e.pointerId); }catch(err){} });
+      hit.addEventListener('pointermove',function(e){
+        if(!down) return;
+        var dx=e.clientX-lastX; lastX=e.clientX; moved=Math.max(moved,Math.abs(e.clientX-tX)+Math.abs(e.clientY-tY));
+        spinA+=dx*0.012; spinV=Math.max(-0.4,Math.min(0.4,dx*0.012)); aim(e.clientX,e.clientY);
+      });
+      var tEnd=function(e){ if(!down) return; down=false; pointerIn=false; if(e.type==='pointerup'&&moved<10&&performance.now()-tT<350) burst(); };
+      hit.addEventListener('pointerup',tEnd); hit.addEventListener('pointercancel',tEnd);
+      if(hint&&!played&&!fine) onHeroIn(function(){
+        setTimeout(function(){ if(!played&&heroScroll<0.2) hint.classList.add('show'); },2600);
+        setTimeout(function(){ hint.classList.remove('show'); },9500);
+      });
     }
     var running=false, visible=true, rafId=0, t0=performance.now();
     function frame(now){
       rafId=0;
-      var t=(now-t0)/1000;
+      var t=(now-t0)/1000, fdt=lastNow?Math.min(3,(now-lastNow)/16.667):1; lastNow=now;
+      spinA+=spinV*fdt; spinV*=Math.pow(0.95,fdt); if(Math.abs(spinV)<1e-4) spinV=0;
       cx+=(tx-cx)*0.04; cy+=(ty-cy)*0.04;
       var introK=anim?1:0;
       if(anim&&introT>=0){ var ip=Math.min(1,(now-introT)/INTRO); introK=Math.pow(1-ip,3); }
@@ -1343,8 +1688,8 @@ section[id],main[id]{scroll-margin-top:72px}
         group.updateMatrixWorld(); group.worldToLocal(rayO); group.worldToLocal(rayP);
         rayD.copy(rayP).sub(rayO).normalize(); needDisp=true;
       }
-      if(mix!==mixShown||needDisp||dispActive){
-        var energy=0, RAD=1.05, STR=0.85;
+      if(mix!==mixShown||needDisp||dispActive||kickOn){
+        var energy=0, kEnergy=0, RAD=1.05, STR=0.85, kd=Math.pow(0.9,fdt), kk=0.025*fdt;
         for(var i=0;i<N;i++){
           var i3=i*3, tdx=0, tdy=0, tdz=0;
           if(needDisp){
@@ -1356,14 +1701,20 @@ section[id],main[id]{scroll-margin-top:72px}
           }
           disp[i3]+=(tdx-disp[i3])*0.14; disp[i3+1]+=(tdy-disp[i3+1])*0.14; disp[i3+2]+=(tdz-disp[i3+2])*0.14;
           energy+=Math.abs(disp[i3])+Math.abs(disp[i3+1])+Math.abs(disp[i3+2]);
-          live[i3]=pos[i3]+(scatter[i3]-pos[i3])*mix+disp[i3];
-          live[i3+1]=pos[i3+1]+(scatter[i3+1]-pos[i3+1])*mix+disp[i3+1];
-          live[i3+2]=pos[i3+2]+(scatter[i3+2]-pos[i3+2])*mix+disp[i3+2];
+          if(kickOn){
+            kvel[i3]=kvel[i3]*kd-kick[i3]*kk; kvel[i3+1]=kvel[i3+1]*kd-kick[i3+1]*kk; kvel[i3+2]=kvel[i3+2]*kd-kick[i3+2]*kk;
+            kick[i3]+=kvel[i3]*fdt; kick[i3+1]+=kvel[i3+1]*fdt; kick[i3+2]+=kvel[i3+2]*fdt;
+            kEnergy+=Math.abs(kick[i3])+Math.abs(kick[i3+1])+Math.abs(kick[i3+2])+Math.abs(kvel[i3])+Math.abs(kvel[i3+1])+Math.abs(kvel[i3+2]);
+          }
+          live[i3]=pos[i3]+(scatter[i3]-pos[i3])*mix+disp[i3]+kick[i3];
+          live[i3+1]=pos[i3+1]+(scatter[i3+1]-pos[i3+1])*mix+disp[i3+1]+kick[i3+1];
+          live[i3+2]=pos[i3+2]+(scatter[i3+2]-pos[i3+2])*mix+disp[i3+2]+kick[i3+2];
         }
         dispActive=energy>0.3; geo.attributes.position.needsUpdate=true; mixShown=mix;
+        if(kickOn&&kEnergy<N*0.0004){ kickOn=false; kick.fill(0); kvel.fill(0); mixShown=-1; }   /* settled: one more pass writes the clean shape */
       }
 
-      group.rotation.y = t*0.22 + cx*0.9 + introK*1.8;
+      group.rotation.y = t*0.22 + cx*0.9 + introK*1.8 + spinA;
       group.rotation.x = 0.18 + cy*0.5 + introK*0.5;
       group.rotation.z = Math.sin(t*0.5)*0.03;
       group.scale.setScalar(baseScale*(1-0.25*introK));

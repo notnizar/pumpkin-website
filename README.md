@@ -11,6 +11,7 @@ Bilingual (English / Arabic) marketing site for **Pumpkin Group LLC**, a brandin
 - **English and Arabic** with a one-tap language switch. Arabic mode flips to right-to-left, swaps to Arabic typefaces (Cairo + IBM Plex Sans Arabic) and mirrors icons.
 - **Three.js hero**: a particle pumpkin (~6k points, 10 ribs, stem, orbit ring and dust) that rotates, breathes and follows the mouse on desktop. Colors follow the site theme.
 - **Light and dark themes** with a toggle; follows the visitor's system setting by default.
+- **Selected work from Behance**: six real projects from [behance.net/PumpkinGroup](https://www.behance.net/PumpkinGroup) (DAMITCI, Smokey Burger, Shaban, Angelina’s Oven, Uncle Osaca, Issa Ayyad Auto Trading). Each tile has a CSS illustration of its discipline (viewfinder, camera HUD, phone feed, oven, film strip, story with a speedometer) with light ambient motion and a hover moment, and links to the Behance profile.
 - **Phone-first layout**: pumpkin gets its own band above the headline, work tiles become a swipeable carousel, sticky "Start a project" bar, 44px+ tap targets, no horizontal scroll.
 - **Motion**: a brand preloader on the first visit of a session, then the headline words rise out of masks while the pumpkin assembles from a scattered cloud. The pumpkin parts around the cursor and dissolves back into particles as you scroll past it. Scroll reveals with stagger on every section, a process line that fills as you read, a quote that lights up word by word, a scroll-aware marquee, cursor-tilt service cards with a spotlight, drifting work-tile art with parallax, magnetic buttons, a lagging ring cursor, film grain, a nav that hides on scroll-down, a progress bar, and a circular theme wipe (View Transitions). All of it is gated behind `html.anim`, so visitors with reduced motion, no JavaScript or an old browser get the finished page at once.
 - **Performance**: pixel ratio capped at 1.5, fewer particles on phones, render loop pauses when the hero is off screen or the tab is hidden, `content-visibility: auto` on below-the-fold sections, Three.js loaded deferred from cdnjs, reduced-motion respected.
@@ -45,7 +46,7 @@ Any static host works (GitHub Pages, Netlify, Vercel, Cloudflare Pages). This re
 These are placeholders and should be replaced with real content:
 
 - Email address (`hello@pumpkinllc.com`) and studio hours
-- The six "Selected work" tiles (generic sector examples, no real client names)
+- The "Selected work" tiles name real Behance projects, but their art is a CSS illustration and every tile links to the Behance profile. Add each project's cover image and gallery URL (see HANDOFF.md, "Selected work").
 - The quote in the "Why Pumpkin" band
 - The "Taking new clients for Q1 2027" pill
 - The contact form shows a confirmation but does not send anywhere yet. Wire it to a form service (Formspree, Netlify Forms, etc.) or your own backend.

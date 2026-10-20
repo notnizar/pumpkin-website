@@ -200,6 +200,8 @@ section{padding-block:clamp(64px,10vw,140px)}
 .work-grid{display:grid;gap:14px}
 @media (min-width:700px){.work-grid{grid-template-columns:repeat(2,1fr)}}
 @media (min-width:1050px){.work-grid{grid-template-columns:repeat(3,1fr)}}
+.swipe-hint{display:none;align-items:center;gap:8px;font-size:13px;color:var(--fg-3);margin-top:14px}
+.swipe-hint svg{width:14px;height:14px}
 /* phone: a swipeable, snapping row instead of six stacked tall tiles */
 @media (max-width:699px){
   .work-scroller{margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px))) calc(-1 * max(16px,env(safe-area-inset-right,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
@@ -208,26 +210,108 @@ section{padding-block:clamp(64px,10vw,140px)}
   .tile{flex:0 0 min(78vw,320px);scroll-snap-align:start}
   .swipe-hint{display:flex}
 }
-.swipe-hint{display:none;align-items:center;gap:8px;font-size:13px;color:var(--fg-3);margin-top:14px}
-.swipe-hint svg{width:14px;height:14px}
 .tile{position:relative;border-radius:var(--radius);overflow:hidden;aspect-ratio:4/5;max-width:100%;background:var(--bg-3);border:1px solid var(--line);display:flex;flex-direction:column;justify-content:flex-end;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
 .tile:hover{transform:translateY(-6px)}
 .tile .art{position:absolute;inset:-8% 0;translate:0 var(--py,0px);transition:transform .7s var(--ease-out)}
 .tile .art::before{content:"";position:absolute;inset:-6%}
 .tile:hover .art{transform:scale(1.04)}
-.tile .meta{position:relative;padding:20px;display:grid;gap:6px;background:linear-gradient(to top,color-mix(in srgb,var(--bg) 92%,transparent) 60%,transparent)}
+.tile .meta{position:relative;padding:48px 20px 20px;display:grid;gap:6px;background:linear-gradient(to top,color-mix(in srgb,var(--bg) 92%,transparent) 60%,transparent)}
 .tile .tag{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-2);font-weight:600}
 .tile h3{font-size:clamp(21px,2vw,28px);font-weight:600}
 .tile .meta p{color:var(--fg-2);font-size:14px}
 .tile .arrow{position:absolute;top:16px;inset-inline-end:16px;width:40px;height:40px;border-radius:50%;background:color-mix(in srgb,var(--bg) 70%,transparent);border:1px solid var(--line);display:grid;place-items:center;color:var(--fg)}
 .tile .arrow svg{width:16px;height:16px}
-.art-1::before{background:radial-gradient(circle at 30% 30%,var(--accent) 0 18%,transparent 19%),radial-gradient(circle at 70% 65%,var(--accent-2) 0 26%,transparent 27%),linear-gradient(135deg,#2b1a0c,#4a2810)}
-.art-2::before{background:repeating-linear-gradient(90deg,transparent 0 22px,color-mix(in srgb,var(--accent) 35%,transparent) 22px 24px),linear-gradient(180deg,#0f2a21,#16423a)}
-.art-3::before{background:conic-gradient(from 200deg at 60% 40%,var(--accent) 0 90deg,transparent 90deg 360deg),linear-gradient(160deg,#3a0f2e,#1b0a17)}
-.art-4::before{background:radial-gradient(ellipse at 50% 110%,var(--accent-2) 0 35%,transparent 36%),radial-gradient(ellipse at 50% 120%,var(--accent) 0 50%,transparent 51%),linear-gradient(180deg,#11131f,#1e2238)}
-.art-5::before{background:linear-gradient(45deg,transparent 48%,var(--accent) 48% 52%,transparent 52%),linear-gradient(-45deg,transparent 48%,var(--accent-2) 48% 52%,transparent 52%),linear-gradient(180deg,#2a2a14,#3c3a1c)}
-.art-6::before{background:radial-gradient(circle at 20% 80%,var(--leaf) 0 22%,transparent 23%),radial-gradient(circle at 80% 20%,var(--accent) 0 30%,transparent 31%),linear-gradient(180deg,#1a1410,#2b201a)}
-.work-note{margin-top:16px;font-size:13px;color:var(--fg-3)}
+/* Project art. Each tile has a backdrop on .art::before (drifts under .anim) and a .scene on top that draws the
+   discipline: a viewfinder, a camera HUD, a phone feed, an oven, a film strip, a story with a gauge. Pure CSS,
+   aria-hidden, sized in % of the 4:5 tile. HUD text (<b>) is device UI, so it keeps an LTR layout in both
+   languages; the story bars sit level with the arrow, which swaps sides in RTL, so they use logical insets and
+   mirror. A real cover goes in as .art > img.cover (see the note in the markup). */
+.tile .art .cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tile .scene{position:absolute;inset:0;pointer-events:none;color:#fff}
+.scene i,.scene b{position:absolute;display:block}
+.scene b{font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.08em;color:rgba(255,255,255,.82);direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+
+/* DAMITCI: a plated dish from above, framed by a viewfinder; the focus box locks on hover */
+.art-damitci::before{background:radial-gradient(circle at 43% 35%,#86d0a2 0 1.2%,transparent 1.6%),radial-gradient(circle at 58% 40%,var(--leaf) 0 1.4%,transparent 1.8%),radial-gradient(circle at 48% 48%,#86d0a2 0 1%,transparent 1.4%),radial-gradient(circle at 55% 46%,var(--leaf) 0 .9%,transparent 1.3%),radial-gradient(circle at 46% 41%,#ffd08a 0 3.2%,transparent 3.6%),radial-gradient(circle at 50% 42%,transparent 0 5.2%,rgba(120,30,0,.4) 5.6% 6.6%,transparent 7%),radial-gradient(circle at 50% 42%,var(--accent) 0 8.5%,#a8400b 12%,transparent 12.5%),radial-gradient(circle at 50% 42%,#f7efe4 0 17.5%,#d8c9b4 18% 20%,transparent 20.4%),radial-gradient(circle at 53% 45%,rgba(0,0,0,.55) 0 19%,transparent 27%),repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 2px,transparent 2px 46px),linear-gradient(160deg,#43291b,#1d110a)}
+.sc-photo .vf{--c:rgba(255,255,255,.85);inset-inline:9%;top:15%;height:50%;background:linear-gradient(var(--c),var(--c)) 0 0/20px 2px,linear-gradient(var(--c),var(--c)) 0 0/2px 20px,linear-gradient(var(--c),var(--c)) 100% 0/20px 2px,linear-gradient(var(--c),var(--c)) 100% 0/2px 20px,linear-gradient(var(--c),var(--c)) 0 100%/20px 2px,linear-gradient(var(--c),var(--c)) 0 100%/2px 20px,linear-gradient(var(--c),var(--c)) 100% 100%/20px 2px,linear-gradient(var(--c),var(--c)) 100% 100%/2px 20px,linear-gradient(90deg,transparent calc(33.33% - .5px),rgba(255,255,255,.14) 0 calc(33.33% + .5px),transparent 0 calc(66.67% - .5px),rgba(255,255,255,.14) 0 calc(66.67% + .5px),transparent 0),linear-gradient(transparent calc(33.33% - .5px),rgba(255,255,255,.14) 0 calc(33.33% + .5px),transparent 0 calc(66.67% - .5px),rgba(255,255,255,.14) 0 calc(66.67% + .5px),transparent 0);background-repeat:no-repeat}
+.sc-photo .af{left:50%;top:40%;width:54px;height:54px;margin:-27px;border:1.5px solid rgba(255,255,255,.9);border-radius:4px;transition:scale .45s var(--ease-out),border-color .3s}
+.tile:hover .sc-photo .af{scale:.8;border-color:#7dffa8}
+.sc-photo .hud{top:calc(15% + 12px);left:calc(9% + 12px)}
+.sc-photo::after{content:"";position:absolute;inset:0;background:#fff;opacity:0}
+
+/* Smokey Burger: a burger over embers, smoke rising, inside a recording frame */
+.art-smokey::before{background:radial-gradient(ellipse 56% 24% at 50% 50%,rgba(255,140,40,.8),rgba(180,55,10,.45) 45%,transparent 75%),radial-gradient(ellipse 40% 30% at 30% 22%,rgba(255,255,255,.05),transparent 70%),linear-gradient(180deg,#0e0c0b,#1b1310 52%,#2c170c)}
+.sc-video .frame{inset-inline:8%;top:14%;height:46%;border:1px solid rgba(255,255,255,.22);border-radius:4px}
+.sc-video .rec{top:calc(14% + 12px);left:calc(8% + 12px);display:flex;align-items:center;gap:6px}
+.sc-video .rec::before{content:"";width:7px;height:7px;border-radius:50%;background:#ff3b30;box-shadow:0 0 8px #ff3b30}
+.sc-video .tc{top:calc(60% - 22px);right:calc(8% + 12px)}
+.sc-video .smoke{left:44%;top:16%;width:12%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(230,220,210,.3),transparent 68%);opacity:.6}
+.sc-video .smoke:nth-child(3){left:37%;top:11%;scale:1.4}
+.sc-video .smoke:nth-child(4){left:51%;top:6%;scale:1.8;opacity:.35}
+.sc-video .burger{left:32%;width:36%;top:24%;aspect-ratio:1/.8;display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 16px 16px rgba(0,0,0,.55));transition:translate .6s var(--ease-out)}
+.tile:hover .sc-video .burger{translate:0 -6px}
+.sc-video .burger i{position:relative;width:100%}
+.burger .bt{height:40%;border-radius:50% 50% 12% 12%/90% 90% 10% 10%;background:radial-gradient(ellipse 3.5px 2px at 28% 38%,#fff1d2 90%,transparent),radial-gradient(ellipse 3.5px 2px at 45% 22%,#fff1d2 90%,transparent),radial-gradient(ellipse 3.5px 2px at 62% 34%,#fff1d2 90%,transparent),radial-gradient(ellipse 3.5px 2px at 76% 56%,#fff1d2 90%,transparent),radial-gradient(ellipse 3.5px 2px at 38% 60%,#fff1d2 90%,transparent),radial-gradient(ellipse 3.5px 2px at 56% 62%,#fff1d2 90%,transparent),linear-gradient(180deg,#f4b766,#cf7a2b)}
+.burger .lt{height:10%;width:106%;margin-top:-1%;border-radius:6px;background:var(--leaf);-webkit-mask:radial-gradient(circle at 50% 100%,transparent 2.5px,#000 3px) 0 0/9px 100%;mask:radial-gradient(circle at 50% 100%,transparent 2.5px,#000 3px) 0 0/9px 100%}
+.burger .ch{z-index:1;height:13%;width:98%;margin-top:-2%;background:var(--accent-2);clip-path:polygon(0 0,100% 0,100% 50%,84% 50%,80% 100%,75% 50%,36% 50%,32% 82%,28% 50%,0 50%)}
+.burger .pt{height:18%;margin-top:-5%;border-radius:10px;background:linear-gradient(180deg,#6b3418,#3b1b0c)}
+.burger .bb{height:16%;width:96%;margin-top:2%;border-radius:4px 4px 14px 14px;background:linear-gradient(180deg,#e39749,#b7651f)}
+
+/* Shaban: rice grains in warm oil light, and a phone showing a social feed */
+.art-shaban::before{background:radial-gradient(circle at 80% 16%,rgba(255,205,100,.5),transparent 36%),radial-gradient(ellipse 4px 1.7px at 50% 50%,rgba(255,244,214,.3) 92%,transparent) 0 0/18px 12px,radial-gradient(ellipse 4px 1.7px at 50% 50%,rgba(255,244,214,.2) 92%,transparent) 9px 6px/18px 12px,linear-gradient(165deg,#5c4613,#241a06)}
+.sc-feed .phone{left:28%;width:44%;top:12%;aspect-ratio:9/14;padding:9px 8px;border-radius:24px;background:#16120a;border:4px solid #2e2618;box-shadow:0 30px 50px -18px rgba(0,0,0,.7),inset 0 0 0 1px rgba(255,255,255,.06);rotate:-6deg;display:flex;flex-direction:column;gap:8px;transition:translate .6s var(--ease-out),rotate .6s var(--ease-out)}
+.tile:hover .sc-feed .phone{translate:0 -10px;rotate:-3deg}
+.sc-feed .phone i{position:relative}
+.sc-feed .stories{height:22px;background:radial-gradient(circle at 12% 50%,#f3e6c8 0 6px,transparent 6.5px),radial-gradient(circle at 12% 50%,transparent 7.5px,var(--accent) 8px 10px,transparent 10.5px),radial-gradient(circle at 37% 50%,#e2b54a 0 6px,transparent 6.5px),radial-gradient(circle at 37% 50%,transparent 7.5px,var(--accent) 8px 10px,transparent 10.5px),radial-gradient(circle at 62% 50%,#f3e6c8 0 6px,transparent 6.5px),radial-gradient(circle at 62% 50%,transparent 7.5px,var(--accent-2) 8px 10px,transparent 10.5px),radial-gradient(circle at 87% 50%,#e2b54a 0 6px,transparent 6.5px),radial-gradient(circle at 87% 50%,transparent 7.5px,rgba(255,255,255,.3) 8px 10px,transparent 10.5px)}
+.sc-feed .posts{aspect-ratio:1;border-radius:4px;background:linear-gradient(90deg,transparent calc(33.333% - 1.5px),#16120a 0 calc(33.333% + 1.5px),transparent 0 calc(66.667% - 1.5px),#16120a 0 calc(66.667% + 1.5px),transparent 0),linear-gradient(transparent calc(33.333% - 1.5px),#16120a 0 calc(33.333% + 1.5px),transparent 0 calc(66.667% - 1.5px),#16120a 0 calc(66.667% + 1.5px),transparent 0),radial-gradient(circle at 50% 50%,#fff3d6 0 8%,transparent 8.5%),radial-gradient(circle at 83.3% 18%,#9a640e 0 5%,transparent 5.5%),linear-gradient(var(--accent),var(--accent)) 50% 50%/33.4% 33.4% no-repeat,conic-gradient(#e2b54a 25%,#f2e8d2 0 50%,#e2b54a 0 75%,#f2e8d2 0) 0 0/66.667% 66.667%}
+.sc-feed .cap{height:20px;background:linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,.55)) 0 3px/70% 4px no-repeat,linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)) 0 13px/46% 4px no-repeat}
+.sc-feed .like{left:62%;top:19%;width:44px;height:44px;border-radius:50%;background:var(--accent);display:grid;place-items:center;box-shadow:0 10px 24px -6px rgba(0,0,0,.6);transition:scale .5s var(--ease-out)}
+.sc-feed .like svg{width:20px;height:20px}
+.tile:hover .sc-feed .like{scale:1.18}
+
+/* Angelina's Oven: a brick oven with a glowing mouth and a loaf on the hearth */
+.art-oven::before{background:radial-gradient(circle,rgba(255,236,210,.14) 0 1px,transparent 1.6px) 0 0/22px 22px,radial-gradient(ellipse 60% 36% at 50% 40%,rgba(255,150,50,.3),transparent 70%),linear-gradient(175deg,#36210f,#160d07)}
+.sc-oven .arch{left:17%;width:66%;top:14%;height:44%;border-radius:50% 50% 0 0/60% 60% 0 0;background:repeating-conic-gradient(from -90deg at 50% 100%,#93492a 0 8.4deg,#4e2513 8.4deg 10deg);box-shadow:inset 0 0 0 2px rgba(0,0,0,.25),0 24px 40px -16px rgba(0,0,0,.7)}
+.sc-oven .mouth{left:30%;width:40%;top:25%;height:33%;overflow:hidden;border-radius:50% 50% 0 0/48% 48% 0 0;background:radial-gradient(ellipse 90% 80% at 50% 100%,#ffe3a6 0,#ffa83f 22%,#e0560f 46%,#5c1d06 76%,#260c03);transition:filter .5s}
+.sc-oven .mouth::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 100%,rgba(255,230,160,.7),transparent 70%);opacity:.45}
+.tile:hover .sc-oven .mouth{filter:brightness(1.2)}
+.sc-oven .loaf{left:38%;width:24%;top:49%;height:8%;border-radius:50% 50% 40% 40%/70% 70% 30% 30%;background:repeating-linear-gradient(120deg,transparent 0 14px,rgba(110,50,15,.55) 14px 17px),linear-gradient(180deg,#f2b56a,#c4732f);box-shadow:0 4px 10px rgba(0,0,0,.4);transition:scale .6s var(--ease-out)}
+.tile:hover .sc-oven .loaf{scale:1.12}
+.sc-oven .ledge{left:12%;width:76%;top:58%;height:3.2%;border-radius:3px;background:linear-gradient(180deg,#6b351a,#3e1d0d)}
+.sc-oven .ember{left:44%;top:40%;width:4px;height:4px;border-radius:50%;background:#ffc46b;box-shadow:0 0 6px #ff9a3c;opacity:.8}
+.sc-oven .ember:nth-child(6){left:54%;top:34%}
+.sc-oven .ember:nth-child(7){left:49%;top:29%;opacity:.5}
+
+/* Uncle Osaca: a sunset frame between two running film strips, with a play button and a scrubber */
+.art-osaca::before{background:radial-gradient(ellipse 9% 2.5% at 66% 50%,rgba(255,180,100,.35),transparent),linear-gradient(180deg,transparent 0 46.5%,#140b1c 46.5%,#0b0810),radial-gradient(circle at 66% 46%,#ffcf8a 0 7%,rgba(255,140,50,.45) 7.5% 12%,transparent 24%),linear-gradient(180deg,#24123a,#6a2a44 46.5%)}
+.sc-film .strip{top:0;bottom:0;left:0;width:22px;overflow:hidden;background:rgba(8,6,12,.85);-webkit-mask:linear-gradient(#000 50%,transparent 68%);mask:linear-gradient(#000 50%,transparent 68%)}
+.sc-film .strip+.strip{left:auto;right:0}
+.sc-film .strip i{position:absolute;left:0;right:0;top:-26px;bottom:0;background:radial-gradient(ellipse 4.5px 6px at 50% 50%,rgba(255,240,226,.8) 92%,transparent) 0 0/100% 26px}
+.sc-film .play{left:50%;top:34%;width:64px;height:64px;margin:-32px;border-radius:50%;border:1.5px solid rgba(255,255,255,.9);background:rgba(20,8,28,.35);transition:background .3s,border-color .3s,scale .45s var(--ease-out)}
+.sc-film .play::before{content:"";position:absolute;left:50%;top:50%;width:18px;height:20px;margin:-10px 0 0 -7px;background:#fff;clip-path:polygon(0 0,100% 50%,0 100%);transition:background .3s}
+.tile:hover .sc-film .play{background:var(--accent);border-color:var(--accent);scale:1.1}
+.tile:hover .sc-film .play::before{background:var(--accent-ink)}
+.sc-film .scrub{left:16%;right:16%;top:58%;height:3px;border-radius:3px;background:rgba(255,255,255,.25)}
+.sc-film .scrub::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--accent);transform-origin:left;scale:.47 1}
+.sc-film .scrub::after{content:"";position:absolute;left:-5.5px;top:-4px;width:100%;height:11px;background:radial-gradient(circle 5.5px at 5.5px 50%,#fff 92%,transparent);translate:47% 0}
+.sc-film .tc{top:calc(58% + 12px);left:16%}
+
+/* Issa Ayyad Auto Trading: a story with progress bars and a speedometer whose needle swings on hover */
+.art-ayyad::before{background:radial-gradient(ellipse 34% 12% at 50% 44%,rgba(120,180,255,.35),transparent 70%),repeating-linear-gradient(172deg,transparent 0 22px,rgba(160,200,255,.07) 22px 23px,transparent 23px 41px),linear-gradient(180deg,#0a111e,#14223a 55%,#0b1019)}
+.sc-story .bars{top:16px;inset-inline:16px 68px;height:3px;border-radius:2px;background:linear-gradient(90deg,rgba(255,255,255,.95) 0 23%,transparent 0 25.5%,rgba(255,255,255,.3) 0 48.5%,transparent 0 51%,rgba(255,255,255,.3) 0 74.5%,transparent 0 77%,rgba(255,255,255,.3) 0)}
+.sc-story .bars::after{content:"";position:absolute;top:0;bottom:0;left:25.5%;width:23%;background:#fff;transform-origin:left;scale:.6 1}
+.sc-story .who{top:28px;inset-inline-start:16px;width:110px;height:24px;background:radial-gradient(circle at 12px 50%,#0b1220 0 8px,transparent 8.5px),radial-gradient(circle at 12px 50%,var(--accent) 0 11px,transparent 11.5px),linear-gradient(rgba(255,255,255,.75),rgba(255,255,255,.75)) 32px 7px/62px 4px no-repeat,linear-gradient(rgba(255,255,255,.35),rgba(255,255,255,.35)) 32px 15px/40px 3px no-repeat}
+[dir="rtl"] .sc-story .bars,[dir="rtl"] .sc-story .who{scale:-1 1}
+.sc-story .gauge{left:18%;width:64%;top:24%;aspect-ratio:2/1}
+.sc-story .gauge::before,.sc-story .gauge::after{content:"";position:absolute;inset:0}
+.sc-story .gauge::before{background:conic-gradient(from -90deg at 50% 100%,var(--accent),var(--accent-2) 120deg,rgba(255,255,255,.16) 0 180deg,transparent 0);-webkit-mask:radial-gradient(circle farthest-side at 50% 100%,transparent calc(100% - 11px),#000 calc(100% - 10px) calc(100% - 1px),transparent 100%);mask:radial-gradient(circle farthest-side at 50% 100%,transparent calc(100% - 11px),#000 calc(100% - 10px) calc(100% - 1px),transparent 100%)}
+.sc-story .gauge::after{background:repeating-conic-gradient(from -90deg at 50% 100%,rgba(255,255,255,.6) 0 1deg,transparent 1deg 18deg);-webkit-mask:radial-gradient(circle farthest-side at 50% 100%,transparent calc(100% - 30px),#000 calc(100% - 29px) calc(100% - 20px),transparent calc(100% - 19px));mask:radial-gradient(circle farthest-side at 50% 100%,transparent calc(100% - 30px),#000 calc(100% - 29px) calc(100% - 20px),transparent calc(100% - 19px))}
+.sc-story .needle{left:calc(50% - 1.5px);width:3px;top:30.4%;height:19.2%;border-radius:3px;background:linear-gradient(to top,#fff,var(--accent));transform-origin:50% 100%;rotate:-50deg;transition:rotate .9s cubic-bezier(.34,1.56,.64,1)}
+.sc-story .needle::after{content:"";position:absolute;left:50%;bottom:-7px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.15)}
+.tile:hover .sc-story .needle{rotate:62deg}
+.sc-story .kmh{left:0;right:0;top:calc(49.6% + 16px);text-align:center}
+.work-more{margin-top:28px}
+@media (max-width:520px){.work-more .btn{width:100%}}
 
 /* ---------- Band ---------- */
 .band{background:var(--bg-2);border-block:1px solid var(--line)}
@@ -444,6 +528,34 @@ section[id],main[id]{scroll-margin-top:72px}
 .tile:hover .meta{translate:0 -4px}
 .tile .tag{transition:color .3s}
 .tile:hover .tag{color:var(--accent)}
+/* Scene ambience: smoke rises, the REC dot blinks, the like floats, embers lift, the film runs, the scrubber plays,
+   the story fills, and a photo tile flashes its shutter on hover. Paused off screen, off on touch (end of block). */
+.anim .sc-video .smoke{animation:smoke 3.6s ease-out infinite}
+.anim .sc-video .smoke:nth-child(3){animation-delay:-1.2s}
+.anim .sc-video .smoke:nth-child(4){animation-delay:-2.4s}
+@keyframes smoke{0%{opacity:0;translate:0 34px}30%{opacity:.9}100%{opacity:0;translate:0 -40px;scale:2.2}}
+.anim .sc-video .rec::before{animation:blink 1.2s step-end infinite}
+@keyframes blink{50%{opacity:.15}}
+.anim .sc-feed .like{animation:bob 3.2s ease-in-out infinite}
+@keyframes bob{50%{translate:0 -7px}}
+.anim .sc-oven .ember{animation:ember 2.6s ease-out infinite}
+.anim .sc-oven .ember:nth-child(6){animation-delay:-.9s}
+.anim .sc-oven .ember:nth-child(7){animation-delay:-1.7s}
+@keyframes ember{0%{opacity:0;translate:0 24px}25%{opacity:1}100%{opacity:0;translate:5px -46px}}
+.anim .sc-oven .mouth::after{animation:flicker 2.4s ease-in-out infinite}
+@keyframes flicker{0%,100%{opacity:.35}30%{opacity:.6}55%{opacity:.4}80%{opacity:.7}}
+.anim .sc-film .strip i{animation:film 1.2s linear infinite}
+@keyframes film{to{translate:0 26px}}
+.anim .sc-film .scrub::before{animation:scrubBar 9s linear infinite}
+.anim .sc-film .scrub::after{animation:scrubKnob 9s linear infinite}
+@keyframes scrubBar{from{scale:.12 1}to{scale:1 1}}
+@keyframes scrubKnob{from{translate:12% 0}to{translate:100% 0}}
+.anim .sc-story .bars::after{animation:story 6s linear infinite}
+@keyframes story{from{scale:0 1}}
+.anim .tile:hover .sc-photo::after{animation:flash .6s ease-out .3s}
+@keyframes flash{15%{opacity:.4}}
+.anim .tile:not(.is-on) .scene *,.anim .tile:not(.is-on) .scene *::before,.anim .tile:not(.is-on) .scene *::after{animation-play-state:paused}
+@media (pointer:coarse){.anim .work-grid .tile .scene *,.anim .work-grid .tile .scene *::before,.anim .work-grid .tile .scene *::after{animation:none}}
 
 /* ---- Band: slow decorative ring, scroll-lit quote (words brighten as the quote scrolls up) ---- */
 .band{position:relative;overflow:hidden}
@@ -695,27 +807,45 @@ section[id],main[id]{scroll-margin-top:72px}
   <div class="wrap">
     <div class="section-head" data-stagger>
       <span class="eyebrow" data-i18n="wk.eyebrow">Selected work</span>
-      <h2 data-i18n="wk.h2">Work that moved the numbers.</h2>
-      <p data-i18n="wk.p">A sample of the kinds of challenges we take on. Full case studies, with client names and results, are available on request.</p>
+      <h2 data-i18n="wk.h2">Fresh from the studio.</h2>
+      <p data-i18n="wk.p">A few favourites from our Behance portfolio: food photography, video and social media for restaurants, food brands and more.</p>
     </div>
+    <!-- Projects from behance.net/PumpkinGroup. Each tile's art is a CSS illustration of the discipline (.art backdrop +
+         .scene on top). To show the real cover instead, add <img class="cover" src="assets/work/NAME.webp" alt=""
+         loading="lazy" decoding="async"> inside .art and delete the tile's .scene. -->
     <div class="work-scroller">
     <div class="work-grid" data-stagger>
-      <a class="tile" href="#contact"><div class="art art-1"></div><span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-        <div class="meta"><span class="tag" data-i18n="w1.t">Branding · F&amp;B</span><h3 data-i18n="w1.h">Café chain rebrand</h3><p data-i18n="w1.p">New identity, packaging and store graphics for a regional coffee brand opening its tenth location.</p></div></a>
-      <a class="tile" href="#contact"><div class="art art-2"></div><span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-        <div class="meta"><span class="tag" data-i18n="w2.t">Digital · Fintech</span><h3 data-i18n="w2.h">App launch campaign</h3><p data-i18n="w2.p">Performance-led launch for a payments app, from onboarding screens to paid social and app-store creative.</p></div></a>
-      <a class="tile" href="#contact"><div class="art art-3"></div><span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-        <div class="meta"><span class="tag" data-i18n="w3.t">Advertising · Real estate</span><h3 data-i18n="w3.h">Residential development</h3><p data-i18n="w3.p">Outdoor, radio and digital campaign that sold out phase one ahead of schedule.</p></div></a>
-      <a class="tile" href="#contact"><div class="art art-4"></div><span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-        <div class="meta"><span class="tag" data-i18n="w4.t">Marketing · Hospitality</span><h3 data-i18n="w4.h">Hotel social relaunch</h3><p data-i18n="w4.p">Content strategy and always-on social management that tripled direct booking enquiries from Instagram.</p></div></a>
-      <a class="tile" href="#contact"><div class="art art-5"></div><span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-        <div class="meta"><span class="tag" data-i18n="w5.t">Branding · Education</span><h3 data-i18n="w5.h">University open day</h3><p data-i18n="w5.p">Campaign identity and event collateral for an admissions season across print, outdoor and TikTok.</p></div></a>
-      <a class="tile" href="#contact"><div class="art art-6"></div><span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-        <div class="meta"><span class="tag" data-i18n="w6.t">Digital · Retail</span><h3 data-i18n="w6.h">E-commerce growth</h3><p data-i18n="w6.p">Site redesign plus Google and Meta performance campaigns for a fashion retailer entering Saudi Arabia.</p></div></a>
+      <a class="tile" href="https://www.behance.net/PumpkinGroup" target="_blank" rel="noopener"><div class="art art-damitci"></div>
+        <div class="scene sc-photo" aria-hidden="true"><i class="vf"></i><i class="af"></i><b class="hud">f/2.8 &nbsp;1/125 &nbsp;ISO 200</b></div>
+        <span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        <div class="meta"><span class="tag" data-i18n="w1.t">Photography · Restaurant</span><h3>DAMITCI</h3><p data-i18n="w1.p">Food photography and social media design for a restaurant brand.</p></div></a>
+      <a class="tile" href="https://www.behance.net/PumpkinGroup" target="_blank" rel="noopener"><div class="art art-smokey"></div>
+        <div class="scene sc-video" aria-hidden="true"><i class="frame"></i><i class="smoke"></i><i class="smoke"></i><i class="smoke"></i>
+          <i class="burger"><i class="bt"></i><i class="lt"></i><i class="ch"></i><i class="pt"></i><i class="bb"></i></i><b class="rec">REC</b><b class="tc">00:00:24:12</b></div>
+        <span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        <div class="meta"><span class="tag" data-i18n="w2.t">Videography · Restaurant</span><h3>Smokey Burger</h3><p data-i18n="w2.p">Outdoor video shoots and social media content for a burger brand.</p></div></a>
+      <a class="tile" href="https://www.behance.net/PumpkinGroup" target="_blank" rel="noopener"><div class="art art-shaban"></div>
+        <div class="scene sc-feed" aria-hidden="true"><i class="phone"><i class="stories"></i><i class="posts"></i><i class="cap"></i></i>
+          <i class="like"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 21s-7.5-4.6-9.5-9.2C1.2 8.6 3.3 5 6.8 5c2 0 3.6 1.1 5.2 3 1.6-1.9 3.2-3 5.2-3 3.5 0 5.6 3.6 4.3 6.8C19.5 16.4 12 21 12 21z"/></svg></i></div>
+        <span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        <div class="meta"><span class="tag" data-i18n="w3.t">Social media · Food brand</span><h3 data-i18n="w3.h">Shaban</h3><p data-i18n="w3.p">Social media design for Shaban rice and oil, from a Jordanian food group founded in 1945.</p></div></a>
+      <a class="tile" href="https://www.behance.net/PumpkinGroup" target="_blank" rel="noopener"><div class="art art-oven"></div>
+        <div class="scene sc-oven" aria-hidden="true"><i class="arch"></i><i class="mouth"></i><i class="loaf"></i><i class="ledge"></i><i class="ember"></i><i class="ember"></i><i class="ember"></i></div>
+        <span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        <div class="meta"><span class="tag" data-i18n="w4.t">F&amp;B · Bakery</span><h3>Angelina’s Oven</h3><p data-i18n="w4.p">Creative for Angelina’s Oven, a bakery and breakfast spot in Amman.</p></div></a>
+      <a class="tile" href="https://www.behance.net/PumpkinGroup" target="_blank" rel="noopener"><div class="art art-osaca"></div>
+        <div class="scene sc-film" aria-hidden="true"><i class="strip"><i></i></i><i class="strip"><i></i></i><i class="play"></i><i class="scrub"></i><b class="tc">00:42 / 01:30</b></div>
+        <span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        <div class="meta"><span class="tag" data-i18n="w5.t">Videography</span><h3>Uncle Osaca</h3><p data-i18n="w5.p">Video production for Uncle Osaca.</p></div></a>
+      <a class="tile" href="https://www.behance.net/PumpkinGroup" target="_blank" rel="noopener"><div class="art art-ayyad"></div>
+        <div class="scene sc-story" aria-hidden="true"><i class="bars"></i><i class="who"></i><i class="gauge"></i><i class="needle"></i><b class="kmh">km/h</b></div>
+        <span class="arrow"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        <div class="meta"><span class="tag" data-i18n="w6.t">Social media · Automotive</span><h3 data-i18n="w6.h">Issa Ayyad Auto Trading</h3><p data-i18n="w6.p">Social media designs for a car trading company.</p></div></a>
     </div>
     </div>
     <p class="swipe-hint"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span data-i18n="wk.swipe">Swipe to see more</span></p>
-    <p class="work-note" data-i18n="wk.note">Project visuals shown are placeholders. Swap in real campaign imagery before sending this page to clients.</p>
+    <div class="work-more" data-reveal><a class="btn btn-ghost" href="https://www.behance.net/PumpkinGroup" target="_blank" rel="noopener"><span data-i18n="wk.more">See all projects on Behance</span>
+      <svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></a></div>
   </div>
 </section>
 
@@ -843,14 +973,14 @@ section[id],main[id]{scroll-margin-top:72px}
     'p2.h':'تحديد','p2.p':'التموضع والجمهور وتسلسل الرسائل وموجز إبداعي يوقّع عليه الجميع. هنا تُتخذ معظم القرارات الصعبة.',
     'p3.h':'تصميم','p3.p':'الهوية ومفاهيم الحملات والتجارب الرقمية، تُعرض كاتجاهات مكتملة لا كلوحات إلهام. جولتا تحسين مضمّنتان.',
     'p4.h':'تسليم ونمو','p4.p':'الإنتاج وإطلاق الإعلام ومراجعة أداء شهرية. نبقى فريقك التسويقي ما دمت تحتاجنا.',
-    'wk.eyebrow':'أعمال مختارة','wk.h2':'أعمال حرّكت الأرقام.','wk.p':'عيّنة من التحديات التي نتصدى لها. دراسات الحالة الكاملة، بأسماء العملاء والنتائج، متاحة عند الطلب.','wk.swipe':'اسحب لرؤية المزيد',
-    'w1.t':'علامة تجارية · أغذية ومشروبات','w1.h':'إعادة تصميم هوية سلسلة مقاهٍ','w1.p':'هوية جديدة وتغليف وجرافيكس للمتاجر لعلامة قهوة إقليمية تفتتح فرعها العاشر.',
-    'w2.t':'رقمي · تكنولوجيا مالية','w2.h':'حملة إطلاق تطبيق','w2.p':'إطلاق قائم على الأداء لتطبيق مدفوعات، من شاشات التسجيل إلى الإعلانات الاجتماعية وتصاميم متجر التطبيقات.',
-    'w3.t':'إعلان · عقارات','w3.h':'مشروع سكني','w3.p':'حملة طرق وراديو ورقمية باعت المرحلة الأولى بالكامل قبل الموعد.',
-    'w4.t':'تسويق · ضيافة','w4.h':'إعادة إطلاق فندق على السوشيال','w4.p':'استراتيجية محتوى وإدارة مستمرة ضاعفت استفسارات الحجز المباشر من إنستغرام ثلاث مرات.',
-    'w5.t':'علامة تجارية · تعليم','w5.h':'يوم الجامعة المفتوح','w5.p':'هوية حملة ومواد فعاليات لموسم القبول عبر المطبوعات والطرق وتيك توك.',
-    'w6.t':'رقمي · تجزئة','w6.h':'نمو التجارة الإلكترونية','w6.p':'إعادة تصميم الموقع مع حملات أداء على جوجل وميتا لمتجر أزياء يدخل السوق السعودية.',
-    'wk.note':'الصور المعروضة مؤقتة. استبدلها بصور الحملات الحقيقية قبل إرسال الصفحة للعملاء.',
+    'wk.eyebrow':'أعمال مختارة','wk.h2':'أعمال طازجة من الاستوديو.','wk.p':'مختارات من أعمالنا على بيهانس: تصوير أطباق وفيديو وسوشيال ميديا لمطاعم وعلامات غذائية وغيرها.','wk.swipe':'اسحب لرؤية المزيد',
+    'w1.t':'تصوير · مطاعم','w1.p':'تصوير أطباق وتصاميم سوشيال ميديا لعلامة مطاعم.',
+    'w2.t':'فيديو · مطاعم','w2.p':'تصوير فيديو خارجي ومحتوى سوشيال ميديا لعلامة برجر.',
+    'w3.t':'سوشيال ميديا · أغذية','w3.h':'شعبان','w3.p':'تصاميم سوشيال ميديا لأرز وزيت شعبان، مجموعة غذائية أردنية منذ 1945.',
+    'w4.t':'أغذية ومشروبات · مخبز','w4.p':'أعمال إبداعية لـ Angelina’s Oven، مخبز ومكان فطور في عمّان.',
+    'w5.t':'فيديو','w5.p':'إنتاج فيديو لـ Uncle Osaca.',
+    'w6.t':'سوشيال ميديا · سيارات','w6.h':'عيسى عياد لتجارة السيارات','w6.p':'تصاميم سوشيال ميديا لشركة تجارة سيارات.',
+    'wk.more':'شاهد كل المشاريع على بيهانس',
     'bd.eyebrow':'لماذا بامبكن','bd.h2':'خبراء كبار على حسابك، من البداية إلى النهاية.','c1':'إبداع بالعربية والإنجليزية','c2':'شراء إعلامي داخلي','c3':'تقارير أداء شهرية','c4':'عقود شهرية أو مشاريع','c5':'الأردن والخليج وبلاد الشام',
     'bd.q':'«من يعرض عليك الفكرة هم أنفسهم من <em>ينفّذون العمل.</em> لا تسليم لفريق مبتدئ بعد أسبوع من التوقيع.»','bd.who':'وعد بامبكن',
     'ct.eyebrow':'لنتحدث','ct.h2':'لديك علامة تجارية تحتاج إلى <span class="o">نموّ؟</span>','ct.email':'البريد الإلكتروني','ct.copy':'نسخ','ct.studio':'الاستوديو','ct.studioV':'خلدا، عمّان، الأردن','ct.hours':'ساعات العمل','ct.hoursV':'الأحد إلى الخميس، 9:00 إلى 18:00 (توقيت عمّان)','ct.follow':'تابعنا',

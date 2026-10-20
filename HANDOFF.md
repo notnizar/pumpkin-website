@@ -4,7 +4,7 @@ Context for continuing this project in a new session. Everything below is curren
 
 ## What this is
 
-A one-page bilingual (English / Arabic) marketing site for **Pumpkin Group LLC**, a branding, marketing, advertising and digital agency in Khilda, Amman, Jordan (founded 2020, 11–50 staff). The owner (Nizar) built it as a portfolio piece to show the agency what his web work looks like. Real facts about the company came from public LinkedIn/Behance listings; all client work, quotes and contact details are placeholders.
+A one-page bilingual (English / Arabic) marketing site for **Pumpkin Group LLC**, a branding, marketing, advertising and digital agency in Khilda, Amman, Jordan (founded 2020, 11–50 staff). The owner (Nizar) built it as a portfolio piece to show the agency what his web work looks like. Real facts about the company came from public LinkedIn/Behance listings. The "Selected work" projects are real (from the agency's Behance profile); the quote and contact details are still placeholders.
 
 Repository: https://github.com/notnizar/pumpkin-website (public, branch `main`)
 Intended live URL: https://notnizar.github.io/pumpkin-website/
@@ -52,7 +52,7 @@ $opts = "--headless=new", "--disable-gpu", "--hide-scrollbars", "--user-data-dir
 
 ## Architecture of the page
 
-Single HTML file, ~68 KB. Sections in order: sticky nav, hero (Three.js canvas), orange marquee, About, Services (4 cards), Process (4 steps), Selected work (6 tiles), "Why Pumpkin" band, Contact (info + form), footer, phone-only sticky CTA.
+Single HTML file. Sections in order: sticky nav, hero (Three.js canvas), orange marquee, About, Services (4 cards), Process (4 steps), Selected work (6 Behance projects), "Why Pumpkin" band, Contact (info + form), footer, phone-only sticky CTA.
 
 **Theming.** All colors are CSS custom properties on `:root`. Dark is the default; light is applied via `@media (prefers-color-scheme: light)` and `:root[data-theme="light"]`. The nav button toggles `data-theme` and saves to `localStorage` key `pk-theme`.
 
@@ -77,21 +77,30 @@ Single HTML file, ~68 KB. Sections in order: sticky nav, hero (Three.js canvas),
 
 To add a revealed block: give the container `data-stagger` (children animate in sequence) or the element `data-reveal`. To add a split headline: add its selector to `SPLIT_SEL`. To turn everything off for a test: remove `anim` from `<html>` in DevTools.
 
+**Selected work (added 2026-10-20).** Six real projects from https://www.behance.net/PumpkinGroup, picked for engagement and range: DAMITCI (restaurant food photography + social media; most views in the snapshot), Smokey Burger (outdoor videography + social media; most appreciations in the snapshot, though the snapshot's counts partly conflicted), Shaban (social media for Shaban rice and Shaban oil; Shaban Group is a Jordanian food group founded in 1945, per its Gulfood exhibitor listing), Angelina’s Oven (an Amman bakery and breakfast spot), Uncle Osaca (videography) and Issa Ayyad Auto Trading (social media). Other projects on the profile: Stem social media, Chef House social media, a "Cedar" project. Behance and its image CDN were blocked from the build container, so the project list came from search-engine snapshots of the profile. The copy says only what the project titles and public listings support: no results, numbers or client quotes. Angelina’s Oven's discipline is not known, hence the generic "Creative for…" line. Confirm or sharpen each line against the real projects.
+
+- *Markup*: each `.tile` is `.art` (backdrop, first child, which the parallax code relies on), then `.scene` (aria-hidden illustration), `.arrow` and `.meta`. Client names that are Arabic in origin (Shaban → شعبان, Issa Ayyad → عيسى عياد) have `data-i18n` on the `h3`; Latin brand names have none and stay Latin in Arabic mode. Tiles open the Behance profile in a new tab (no per-project gallery URLs were reachable); "See all projects on Behance" (`.work-more`) sits under the grid.
+- *Art*: `.art-damitci` … `.art-ayyad` paint the backdrop on `.art::before` (it keeps the shared slow drift). Each `.scene` (`sc-photo`, `sc-video`, `sc-feed`, `sc-oven`, `sc-film`, `sc-story`) draws the discipline in CSS: viewfinder with rule-of-thirds and an AF box, a REC frame around a burger with rising smoke, a phone with stories and a post grid, a brick oven with embers, film strips around a sunset with a play button and scrubber, story bars over a speedometer. Positions are % of the 4:5 tile. HUD text (`.scene b`) is device UI and stays LTR in Arabic; the story bars and avatar sit level with the arrow, so they use logical insets and mirror in RTL.
+- *Motion*: hover locks the AF box (+ a shutter flash), lifts the burger and phone, brightens the oven, fills the play button and swings the needle. Ambient loops (smoke, REC blink, floating like, embers, oven flicker, running film, scrubber, story progress) run only under `.anim`, pause when the tile loses `.is-on`, and are switched off on coarse pointers. All are `transform`/`opacity` only.
+- *Real covers*: put a WebP in `assets/work/`, add `<img class="cover" src="assets/work/NAME.webp" alt="" loading="lazy" decoding="async">` inside that tile's `.art`, and delete its `.scene`. `.tile .art .cover` is already styled (fills the parallax layer, `object-fit: cover`). Replace each tile's `href` with the project's gallery URL at the same time.
+
 **Other performance choices.** `content-visibility: auto` on every section after the hero (class `lazy`), nav `backdrop-filter` only ≥900 px, marquee animates `transform` only, scroll handler throttled with `requestAnimationFrame`.
 
-**Phone layout.** Work tiles become a horizontal snap-scroll row below 700 px (`.work-scroller`), with a "swipe" hint. A fixed bottom "Start a project" bar (`#stickyCta`) shows below 900 px and hides when the contact section is in view. Buttons go full width below 520 px; all inputs are 16 px to stop iOS zoom; tap targets ≥ 44 px.
+**Phone layout.** Work tiles become a horizontal snap-scroll row below 700 px (`.work-scroller`), with a "swipe" hint. (The hint never showed before 2026-10-20: its base `display:none` rule came after the phone media query. Fixed by moving the base rule above it.) A fixed bottom "Start a project" bar (`#stickyCta`) shows below 900 px and hides when the contact section is in view. Buttons go full width below 520 px; all inputs are 16 px to stop iOS zoom; tap targets ≥ 44 px.
 
 **Form.** `#contactForm` validates name and email client-side, then swaps `#formFields` for `#formSuccess` in place. It does not submit anywhere. To make it real, POST the fields to Formspree/Netlify Forms/your API inside the `submit` handler before showing success.
 
 ## Placeholders to replace before the client sees it
 
 - `hello@pumpkinllc.com` (guessed from their Behance domain) and the studio hours
-- The six work tiles: generic sector examples with CSS-gradient art, no real clients
+- Work tiles: real Behance projects, but CSS-illustration art and links to the profile rather than each project (see "Selected work" above)
 - The quote in the "Why Pumpkin" band (written as a brand promise, not a testimonial)
 - "Taking new clients for Q1 2027" pill
 - Social links point to: instagram.com/pumpkin.llc, facebook.com/Pumpkin.groupllc, linkedin.com/company/pumpkin-group-llc, behance.net/PumpkinGroup (these are the real public profiles)
 
 ## Testing done
+
+Selected work pass (2026-10-20), headless Chromium via Playwright, local server, fonts and cdnjs blocked: 1400×900 and 390×844, English and Arabic, light and dark, plus reduced-motion and JavaScript-disabled runs. No console errors and no horizontal overflow in any run. Checked: all six tiles link to the Behance profile in a new tab; Arabic round trip through the language button (tags, Arabic client names, button and heading switch and switch back); every tile's hover state; scene animations are paused while their tile is off screen, running once it is on screen, absent on a touch device and with reduced motion; the static no-JS render shows every scene; the phone swipe hint now displays.
 
 Pre-deploy review (2026-10-20): four independent reviewers (JS runtime, cross-browser CSS, RTL/i18n/a11y, mobile performance) over the diff, each finding adversarially re-checked against the code. Ten confirmed, all fixed before merging: hero copy faded while still mid-screen on phones; a double tap on the theme or language button re-applied the same state because the target was computed before the deferred view-transition callback; the marquee loop width was measured before web fonts loaded, so the band snapped at every wrap; the marquee never switched to Arabic (pre-existing); word masks clipped the dots under a final yeh and the italic `y`; tabbing into the scroll-hidden nav scrolled the page; too many simultaneous transitions on phones (word masks, tile drift) and infinite animations ticking while off screen. Three findings were refuted (no `color-mix` fallback in Safari 16.0, read/write interleaving in the scroll handler, paint-layer churn on the quote words).
 
@@ -103,7 +112,7 @@ Rendered in headless Chromium at 1400×900 and 390×844, English and Arabic, lig
 
 ## Ideas not yet done
 
-- Replace tile art with real campaign images (WebP, lazy-loaded)
+- Add the real Behance cover image and gallery URL to each work tile (see "Selected work" for the one-line change). Needs a machine that can reach behance.net.
 - Wire the form to a backend
 - Optional: a custom domain in Pages settings
 - Optional: a second Three.js moment on the contact section (keep it paused off-screen like the hero)

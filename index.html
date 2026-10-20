@@ -111,7 +111,7 @@ section{padding-block:clamp(64px,10vw,140px)}
 .section-head p{color:var(--fg-2);font-size:clamp(16px,1.4vw,20px);max-width:60ch}
 
 /* ---------- Nav ---------- */
-.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--bg) 92%,transparent);border-bottom:1px solid transparent;transition:border-color .3s,translate .45s var(--ease-out)}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--bg) 92%,transparent);border-bottom:1px solid transparent;transition:border-color .3s,clip-path .45s var(--ease-out)}
 @media (min-width:900px){.nav{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 78%,transparent)}}
 .nav.scrolled{border-bottom-color:var(--line)}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
@@ -342,19 +342,18 @@ section[id],main[id]{scroll-margin-top:72px}
 .anim [data-stagger]>.eyebrow:not(.in)::before{transform:scaleX(0)}
 
 /* ---- Headline word masks (.split added by JS; words rise out of a clipped box) ---- */
-.split .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding:.14em .1em .2em;margin:-.14em -.1em -.2em}
+.split .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding:.14em .16em .3em;margin:-.14em -.16em -.3em}
 .split .wi{display:inline-block}
-.anim .split .wi{translate:0 125%;transition:translate 1.15s var(--ease-out);transition-delay:calc(var(--i,0)*85ms + var(--w,0)*60ms)}
+.anim .split .wi{translate:0 135%;transition:translate 1.15s var(--ease-out);transition-delay:calc(var(--i,0)*85ms + min(var(--w,0)*60ms,480ms))}
 .anim .split.in .wi{translate:0 0}
 .anim .split[data-reveal],.anim [data-stagger]>.split{opacity:1;translate:0 0;transition:none}
-.anim .hero h1:not(.split){opacity:0}
 
 /* ---- Hero entrance: driven by html.hero-in (set after the preloader, or at once) ---- */
 .anim.hero-in [data-hero]{opacity:1;translate:0 0;scale:1}
 .anim.hero-in .split[data-hero] .wi{translate:0 0}
-.anim .hero h1 .wi{transition-duration:1.3s;transition-delay:calc(.08s + var(--w,0)*70ms)}
+.anim .hero h1 .wi{transition-duration:1.3s;transition-delay:calc(.08s + min(var(--w,0)*70ms,560ms))}
 .anim .hero [data-hero]{transition-delay:calc(.25s + var(--i,0)*120ms)}
-.anim .hero .wrap{translate:0 calc(var(--hp,0)*70px);opacity:calc(1 - var(--hp,0)*.75)}
+@media (min-width:1000px){.anim .hero .wrap{translate:0 calc(var(--hp,0)*70px);opacity:calc(1 - var(--hp,0)*.75)}}
 .pill .dot{position:relative}
 .pill .dot::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:2px solid var(--leaf);opacity:0;animation:ping 2.6s var(--ease-out) infinite .8s}
 @keyframes ping{0%{scale:.6;opacity:.9}70%,100%{scale:2;opacity:0}}
@@ -368,6 +367,7 @@ section[id],main[id]{scroll-margin-top:72px}
 .hero .glow-b{width:48vmax;height:48vmax;bottom:-32vmax;inset-inline-start:-18vmax;background:radial-gradient(closest-side,color-mix(in srgb,var(--leaf) 24%,transparent),transparent)}
 .anim .hero .glow-a{animation:drift-a 24s ease-in-out infinite alternate}
 .anim .hero .glow-b{animation:drift-b 30s ease-in-out infinite alternate}
+.anim .hero:not(.is-on) .glow,.anim .hero:not(.is-on) .pill .dot::after{animation-play-state:paused}
 @keyframes drift-a{to{translate:-9% 12%;scale:1.14}}
 @keyframes drift-b{to{translate:12% -9%;scale:1.1}}
 :root[data-theme="light"] .hero .glow{opacity:.38}
@@ -382,13 +382,14 @@ section[id],main[id]{scroll-margin-top:72px}
 @media (min-width:900px){.anim .scroll-cue{display:flex}}
 .anim.hero-in .scroll-cue{opacity:1}
 .anim.hero-in.is-scrolled .scroll-cue{opacity:0;transition-delay:0s;pointer-events:none}
+.anim.hero-in.is-scrolled .scroll-cue .cue-line i{animation-play-state:paused}
 .scroll-cue .cue-line{width:1px;height:42px;background:var(--line);position:relative;overflow:hidden}
 .scroll-cue .cue-line i{position:absolute;left:0;top:0;width:100%;height:40%;background:var(--accent);animation:cue 1.9s var(--ease-in-out) infinite}
 @keyframes cue{0%{translate:0 -100%}100%{translate:0 260%}}
 
 /* ---- Nav: underline that travels, hides on scroll-down, progress bar, menu stagger ---- */
-.anim .nav.nav-hidden{translate:0 -100%}
-.nav.nav-hidden:focus-within{translate:0 0}
+.anim .nav.nav-hidden{clip-path:inset(0 0 100% 0)}
+.nav.nav-hidden:focus-within{clip-path:none}
 .nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;border-radius:2px;background:var(--accent);transform:scaleX(0);transform-origin:right;transition:transform .4s var(--ease-out)}
 .nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1);transform-origin:left}
 [dir="rtl"] .nav-links a::after{transform-origin:left}
@@ -454,7 +455,8 @@ section[id],main[id]{scroll-margin-top:72px}
 }
 
 /* ---- Work tiles: slow ambient drift, hover shine, arrow fill ---- */
-.anim .tile .art::before{animation:artDrift 20s ease-in-out infinite alternate}
+.anim .tile .art::before{animation:artDrift 20s ease-in-out infinite alternate;animation-play-state:paused}
+.anim .tile.is-on .art::before{animation-play-state:running}
 .anim .tile:nth-child(2n) .art::before{animation-duration:26s;animation-direction:alternate-reverse}
 .anim .tile:nth-child(3n) .art::before{animation-duration:23s}
 @keyframes artDrift{to{translate:3% -3%;scale:1.07;rotate:1.5deg}}
@@ -473,8 +475,10 @@ section[id],main[id]{scroll-margin-top:72px}
 .band .wrap{position:relative;z-index:1}
 .band-ring{position:absolute;width:min(72vw,640px);height:min(72vw,640px);inset-inline-end:-14%;top:50%;translate:0 -50%;pointer-events:none;color:var(--accent);opacity:.55}
 .anim .band-ring{animation:spin 70s linear infinite}
+.anim .band:not(.is-on) .band-ring{animation-play-state:paused}
 @keyframes spin{to{rotate:360deg}}
 .band blockquote .qw{display:inline-block;opacity:clamp(.16,calc(var(--n,99) - var(--i,0) + 1),1);transition:opacity .3s}
+@media (pointer:coarse){.band blockquote .qw{transition:none}.anim .tile .art::before{animation:none}.anim .band-ring{animation:none}}
 .chip{transition:border-color .3s,translate .3s var(--ease-out),background .3s}
 .chip:hover{border-color:var(--accent);translate:0 -2px}
 
@@ -606,7 +610,7 @@ section[id],main[id]{scroll-margin-top:72px}
       <span class="pill"><span class="dot"></span><span data-i18n="hero.pill">Taking new clients for Q1 2027</span></span>
       <span data-i18n="hero.sub">Branding · Marketing · Advertising · Digital — Amman, Jordan</span>
     </div>
-    <h1 data-i18n="hero.h1" data-hero>We grow brands people <span class="o">actually</span> remember.</h1>
+    <h1 data-i18n="hero.h1" data-reveal data-hero style="--i:1">We grow brands people <span class="o">actually</span> remember.</h1>
     <div data-reveal data-hero style="--i:2">
       <p class="hero-lede" data-i18n="hero.lede">Pumpkin is a full-service marketing agency based in Amman. <strong>Strategy, identity, campaigns and digital</strong> under one roof, built for brands across Jordan and the wider region that want to stand out and stay there.</p>
       <div class="hero-cta">
@@ -917,7 +921,7 @@ section[id],main[id]{scroll-margin-top:72px}
     return idx;
   }
   function splitAll(){
-    if(!anim) return;
+    if(!anim||!fine) return;   /* word masks on fine-pointer devices only; phones reveal each heading as one block */
     document.querySelectorAll(SPLIT_SEL).forEach(function(h){ if(h.querySelector('.w')) return; wrapWords(h,'w','wi','--w'); h.classList.add('split'); });
   }
   var quoteEl=document.getElementById('quote'), qCount=0;
@@ -958,10 +962,10 @@ section[id],main[id]{scroll-margin-top:72px}
   }
   function applyTheme(next){ root.setAttribute('data-theme',next); syncThemeColor(); try{localStorage.setItem('pk-theme',next);}catch(e){} }
   themeBtn.addEventListener('click',function(){
-    var next=isLight()?'dark':'light';
     var r=themeBtn.getBoundingClientRect(), x=r.left+r.width/2, y=r.top+r.height/2;
     var R=Math.hypot(Math.max(x,window.innerWidth-x),Math.max(y,window.innerHeight-y));
-    var vt=withTransition('theme',function(){ applyTheme(next); });
+    /* the target is read inside the callback: startViewTransition defers it, and a second tap must see the new state */
+    var vt=withTransition('theme',function(){ applyTheme(isLight()?'dark':'light'); });
     if(vt&&vt.ready){ vt.ready.then(function(){ try{ root.animate({clipPath:['circle(0px at '+x+'px '+y+'px)','circle('+R+'px at '+x+'px '+y+'px)']},{duration:650,easing:'cubic-bezier(.65,0,.35,1)',pseudoElement:'::view-transition-new(root)'}); }catch(e){} },function(){}); }
   });
 
@@ -977,7 +981,12 @@ section[id],main[id]{scroll-margin-top:72px}
      the CSS keyframe animation runs instead. */
   var mq=document.getElementById('marquee');
   var mqHalf=0,mqX=0,mqRun=false,mqRaf=0,mqLast=0,mqY=window.scrollY,mqVel=0;
-  function rebuildMarquee(){ var items=[].slice.call(mq.querySelectorAll('[data-i18n]')).slice(0,10); var html=items.map(function(s){return s.outerHTML}).join(''); mq.innerHTML=html+html; measureMarquee(); }
+  function rebuildMarquee(){
+    var items=[].slice.call(mq.querySelectorAll('[data-i18n]')).slice(0,10);
+    /* the i18n pass only sees the original spans, which this rebuild detaches, so translate the live ones here */
+    items.forEach(function(sp){ var k=sp.getAttribute('data-i18n'), v=lang==='ar'?AR[k]:EN[k]; if(v!=null) sp.innerHTML=v; });
+    var html=items.map(function(sp){ return sp.outerHTML; }).join(''); mq.innerHTML=html+html; measureMarquee();
+  }
   function measureMarquee(){ mqHalf=mq.scrollWidth/2; }
   function mqFrame(now){
     mqRaf=0; var dt=Math.min(64,now-(mqLast||now)); mqLast=now;
@@ -993,14 +1002,16 @@ section[id],main[id]{scroll-margin-top:72px}
   if(anim){
     new IntersectionObserver(function(en){ mqRun=en[0].isIntersecting; mqStart(); },{threshold:0}).observe(mq.parentNode);
     document.addEventListener('visibilitychange',mqStart);
-    window.addEventListener('resize',measureMarquee,{passive:true});
+    /* the track is width:max-content, so it resizes when the web fonts swap in or the text changes */
+    if('ResizeObserver' in window) new ResizeObserver(measureMarquee).observe(mq); else window.addEventListener('resize',measureMarquee,{passive:true});
+    if(document.fonts&&document.fonts.ready) document.fonts.ready.then(measureMarquee,function(){});
   }
 
   /* ---------------- language init ---------------- */
   var startLang='en';
   try{ var sl=localStorage.getItem('pk-lang'); if(sl==='ar'||sl==='en') startLang=sl; }catch(e){}
   if(startLang==='ar') setLang('ar'); else { document.getElementById('langBtn').setAttribute('aria-label',MSG.en.langLabel); }
-  document.getElementById('langBtn').addEventListener('click',function(){ var next=lang==='ar'?'en':'ar'; withTransition('lang',function(){ setLang(next); }); });
+  document.getElementById('langBtn').addEventListener('click',function(){ withTransition('lang',function(){ setLang(lang==='ar'?'en':'ar'); }); });
 
   /* ---------------- sticky phone CTA: hide once the contact section is on screen ---------------- */
   var sticky=document.getElementById('stickyCta'), contact=document.getElementById('contact');
@@ -1103,7 +1114,10 @@ section[id],main[id]{scroll-margin-top:72px}
     if(stepsEl){ stepsEl.setAttribute('data-track','steps'); nearIO.observe(stepsEl); }
     if(quoteEl){ quoteEl.setAttribute('data-track','quote'); nearIO.observe(quoteEl); }
     if(footBig){ footBig.setAttribute('data-track','foot'); nearIO.observe(footBig); }
-    var tileIO=new IntersectionObserver(function(entries){ entries.forEach(function(e){ var i=tilesNear.indexOf(e.target); if(e.isIntersecting&&i<0) tilesNear.push(e.target); else if(!e.isIntersecting&&i>=0) tilesNear.splice(i,1); }); onScroll(); },{rootMargin:'10% 0px'});
+    var tileIO=new IntersectionObserver(function(entries){ entries.forEach(function(e){ e.target.classList.toggle('is-on',e.isIntersecting); var i=tilesNear.indexOf(e.target); if(e.isIntersecting&&i<0) tilesNear.push(e.target); else if(!e.isIntersecting&&i>=0) tilesNear.splice(i,1); }); onScroll(); },{rootMargin:'10% 0px'});
+    /* .is-on lets the stylesheet pause the hero glows, the pill ping and the band ring while they are off screen */
+    var onIO=new IntersectionObserver(function(entries){ entries.forEach(function(e){ e.target.classList.toggle('is-on',e.isIntersecting); }); },{rootMargin:'10% 0px'});
+    onIO.observe(hero); var bandEl=document.querySelector('.band'); if(bandEl) onIO.observe(bandEl);
     tileEls.forEach(function(t){ tileIO.observe(t); });
   }
   function onScroll(){
@@ -1116,7 +1130,7 @@ section[id],main[id]{scroll-margin-top:72px}
       else if(dy<-4||y<=180) nav.classList.remove('nav-hidden');
       var docH=document.documentElement.scrollHeight-vh;
       if(progressEl) progressEl.style.setProperty('--sp',(docH>0?clamp01(y/docH):0).toFixed(4));
-      heroScroll=clamp01(y/Math.max(1,hero.offsetHeight*0.9)); hero.style.setProperty('--hp',heroScroll.toFixed(3));
+      heroScroll=clamp01(y/Math.max(1,window.innerWidth<1000?320:hero.offsetHeight*0.9)); hero.style.setProperty('--hp',heroScroll.toFixed(3));
       if(near.steps&&stepsEl){ var r=stepsEl.getBoundingClientRect(), line=vh*0.62; stepsEl.style.setProperty('--p',clamp01((line-r.top)/Math.max(1,r.height)).toFixed(3)); stepEls.forEach(function(s){ s.classList.toggle('is-active',s.getBoundingClientRect().top<line); }); }
       if(near.quote&&quoteEl&&qCount){ var q=quoteEl.getBoundingClientRect(), qs=vh*0.92, qe=vh*0.42; var qp=clamp01((qs-q.top)/Math.max(1,(qs-qe)+q.height*0.6)); quoteEl.style.setProperty('--n',(qp*qCount*1.15).toFixed(2)); }
       if(near.foot&&footBig){ var f=footBig.getBoundingClientRect(); footBig.style.setProperty('--fp',clamp01((vh-f.top)/Math.max(1,f.height)).toFixed(3)); }

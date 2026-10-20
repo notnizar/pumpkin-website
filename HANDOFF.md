@@ -4,7 +4,7 @@ Context for continuing this project in a new session. Everything below is curren
 
 ## What this is
 
-A one-page bilingual (English / Arabic) marketing site for **Pumpkin Group LLC**, a branding, marketing, advertising and digital agency in Khilda, Amman, Jordan (founded 2020, 11–50 staff). The owner (Nizar) built it as a portfolio piece to show the agency what his web work looks like. Real facts about the company came from public LinkedIn/Behance listings. The "Selected work" projects are real (from the agency's Behance profile); the quote and contact details are still placeholders.
+A one-page bilingual (English / Arabic) marketing site for **Pumpkin Group LLC**, a branding, marketing, advertising and digital agency in Khilda, Amman, Jordan (founded 2020, 11–50 staff). The owner (Nizar) built it as a portfolio piece to show the agency what his web work looks like. Real facts about the company came from public LinkedIn/Behance listings. The "Selected work" projects are real, with their Behance covers and gallery links; the quote and contact details are still placeholders.
 
 Repository: https://github.com/notnizar/pumpkin-website (public, branch `main`)
 Intended live URL: https://notnizar.github.io/pumpkin-website/
@@ -16,15 +16,17 @@ Preview artifact (Claude): https://claude.ai/artifact/SymUDGcwCajvjDa71KvuWt
 |---|---|
 | `index.html` | The complete standalone page. This is what GitHub Pages serves. Edit this one. |
 | `artifact.html` | Same content minus the `<!doctype>/<html>/<head>/<body>` skeleton. Used only for the Claude artifact host. Regenerate with `python3 scripts/build-artifact.py` after editing `index.html`. |
-| `scripts/build-artifact.py` | The three-line derivation above. No other tooling. |
+| `scripts/build-artifact.py` | The three-line derivation above. |
+| `scripts/work-backdrop.py` | Makes the blurred backdrop (`NAME-bg.webp`) for a Selected work cover. Needs Pillow. |
 | `.github/workflows/pages.yml` | Deploys the repo root to GitHub Pages on every push to `main`. |
 | `.nojekyll` | Tells Pages not to run Jekyll. |
 | `README.md` | Public description, run and deploy notes. |
 | `assets/favicon.svg` | Favicon: the nav logo mark with literal colours. |
 | `assets/favicon-32.png`, `assets/apple-touch-icon.png` | PNG icons for browsers that ignore SVG favicons (Safari, older ones) and for iOS home screens. Rendered from `assets/icon.html`. |
 | `assets/og-image.png` | 1200×630 Open Graph / Twitter card image. Rendered from `assets/og-image.html`, a still of the hero's particle pumpkin drawn on a canvas. |
+| `assets/work/` | Selected work covers from Behance (`NAME.webp`, 808×632) and their tiny blurred backdrops (`NAME-bg.webp`). |
 
-No build step, no dependencies to install. Open `index.html` in a browser or run `npx serve .`.
+No build step, no dependencies to install (Pillow only if you regenerate a work backdrop). Open `index.html` in a browser or run `npx serve .`.
 
 ## Deployment (live since 2026-10-15)
 
@@ -77,12 +79,25 @@ Single HTML file. Sections in order: sticky nav, hero (Three.js canvas), orange 
 
 To add a revealed block: give the container `data-stagger` (children animate in sequence) or the element `data-reveal`. To add a split headline: add its selector to `SPLIT_SEL`. To turn everything off for a test: remove `anim` from `<html>` in DevTools.
 
-**Selected work (added 2026-10-20).** Six real projects from https://www.behance.net/PumpkinGroup, picked for engagement and range: DAMITCI (restaurant food photography + social media; most views in the snapshot), Smokey Burger (outdoor videography + social media; most appreciations in the snapshot, though the snapshot's counts partly conflicted), Shaban (social media for Shaban rice and Shaban oil; Shaban Group is a Jordanian food group founded in 1945, per its Gulfood exhibitor listing), Angelina’s Oven (an Amman bakery and breakfast spot), Uncle Osaca (videography) and Issa Ayyad Auto Trading (social media). Other projects on the profile: Stem social media, Chef House social media, a "Cedar" project. Behance and its image CDN were blocked from the build container, so the project list came from search-engine snapshots of the profile. The copy says only what the project titles and public listings support: no results, numbers or client quotes. Angelina’s Oven's discipline is not known, hence the generic "Creative for…" line. Confirm or sharpen each line against the real projects.
+**Selected work (added 2026-10-20; real covers and gallery links added the same day).** Six real projects from https://www.behance.net/PumpkinGroup, each tile showing the project's Behance cover and opening its gallery in a new tab:
 
-- *Markup*: each `.tile` is `.art` (backdrop, first child, which the parallax code relies on), then `.scene` (aria-hidden illustration), `.arrow` and `.meta`. Client names that are Arabic in origin (Shaban → شعبان, Issa Ayyad → عيسى عياد) have `data-i18n` on the `h3`; Latin brand names have none and stay Latin in Arabic mode. Tiles open the Behance profile in a new tab (no per-project gallery URLs were reachable); "See all projects on Behance" (`.work-more`) sits under the grid.
-- *Art*: `.art-damitci` … `.art-ayyad` paint the backdrop on `.art::before` (it keeps the shared slow drift). Each `.scene` (`sc-photo`, `sc-video`, `sc-feed`, `sc-oven`, `sc-film`, `sc-story`) draws the discipline in CSS: viewfinder with rule-of-thirds and an AF box, a REC frame around a burger with rising smoke, a phone with stories and a post grid, a brick oven with embers, film strips around a sunset with a play button and scrubber, story bars over a speedometer. Positions are % of the 4:5 tile. HUD text (`.scene b`) is device UI and stays LTR in Arabic; the story bars and avatar sit level with the arrow, so they use logical insets and mirror in RTL.
-- *Motion*: hover locks the AF box (+ a shutter flash), lifts the burger and phone, brightens the oven, fills the play button and swings the needle. Ambient loops (smoke, REC blink, floating like, embers, oven flicker, running film, scrubber, story progress) run only under `.anim`, pause when the tile loses `.is-on`, and are switched off on coarse pointers. All are `transform`/`opacity` only.
-- *Real covers*: put a WebP in `assets/work/`, add `<img class="cover" src="assets/work/NAME.webp" alt="" loading="lazy" decoding="async">` inside that tile's `.art`, and delete its `.scene`. `.tile .art .cover` is already styled (fills the parallax layer, `object-fit: cover`). Replace each tile's `href` with the project's gallery URL at the same time.
+| Tile | Behance project | Cover |
+|---|---|---|
+| DAMITCI | https://www.behance.net/gallery/115886219/DAMITCI-Restaurant-Food-Photography | `damitci.webp` |
+| Smokey Burger | https://www.behance.net/gallery/117975989/Smokey-Outdoor-Videography | `smokey.webp` |
+| Shaban | https://www.behance.net/gallery/235733203/Social-media-design-Shaban-rice | `shaban.webp` |
+| Angelina’s Oven | https://www.behance.net/gallery/122865929/Angelinas-Oven | `angelinas-oven.webp` |
+| Issa Ayyad Auto Trading | https://www.behance.net/gallery/234579661/Social-media-designs-Issa-Ayyad-Auto-trading | `issa-ayyad.webp` |
+| Uncle Osaka | https://www.behance.net/gallery/117974685/Uncle-Osaca-Videography | `uncle-osaka.webp` |
+
+Where a client has two projects, the tile links the one its tag names: Smokey's videography (its social media project is 117987605), Shaban rice (Shaban oil is 235661863), DAMITCI's food photography (DAMITCI social media is 116803729). Other projects on the profile: Stem social media, Chef House social media, Cedar. The Behance title says "Uncle Osaca", but the project's own description and its cover say Uncle Osaka, so the tile does too. Uncle Osaka sits last so the two videography covers (same TV-set design) are not stacked in one column. The copy says only what the project titles and descriptions support: no results, numbers or client quotes. The project descriptions would support sharper lines if wanted: DAMITCI is "an Italian restaurant located in Amman, Jordan" (its logo reads D'Amici Italian Kitchen); Uncle Osaka is "a Japanese cake shop based in Amman, Jordan"; Angelina's Oven is filed under Graphic Design and its cover is the brand's logo.
+
+- *Markup*: each `.tile` is `.art` (ambient backdrop, first child, which the parallax code relies on), then `img.cover`, `.arrow` and `.meta`. The cover has `alt=""` because the tile's caption already names the project, and `loading="lazy"` with `width`/`height` so nothing shifts. Client names that are Arabic in origin (Shaban → شعبان, Issa Ayyad → عيسى عياد) have `data-i18n` on the `h3`; Latin brand names have none and stay Latin in Arabic mode. "See all projects on Behance" (`.work-more`) under the grid links the profile.
+- *Layout*: Behance covers are 808×632 landscape title cards lettered almost to the edges, so they are never cropped. The cover sits whole at the top of the 4:5 tile, inset 12 px with a shadow, and the caption sits below it. Behind it, `.art-NAME::before` stretches `NAME-bg.webp`, a 48×38 pre-blurred copy of the cover (a few hundred bytes), into a soft colour field that matches each cover. The blur is baked into the file so the drifting layer carries no CSS `filter`.
+- *Motion*: the backdrop keeps the shared slow drift (`artDrift`, paused off screen, off on touch) and the desktop scroll parallax, and scales up on hover; the cover lifts 4 px on hover, alongside the existing shine sweep, arrow fill and caption lift.
+- *Swapping a project*: save its Behance cover (the 808 px WebP from the profile's project card) as `assets/work/NAME.webp`, run `python3 scripts/work-backdrop.py assets/work/NAME.webp`, then point the tile's `href`, its `img` and its `.art-*` rule in the stylesheet at the new files. Behance project pages sit behind a JavaScript challenge, so fetch them with a real browser (headless Chromium works); the profile page and the image CDN answer plain requests.
+
+The CSS illustrations that stood in for the covers (viewfinder, REC frame, phone feed, oven, film strip, speedometer) were removed with their keyframes. One of those keyframes reused the name `bob` and had been overriding the logo's hover wiggle; the logo has its own squash-and-stretch back.
 
 **Other performance choices.** `content-visibility: auto` on every section after the hero (class `lazy`), nav `backdrop-filter` only ≥900 px, marquee animates `transform` only, scroll handler throttled with `requestAnimationFrame`.
 
@@ -93,14 +108,15 @@ To add a revealed block: give the container `data-stagger` (children animate in 
 ## Placeholders to replace before the client sees it
 
 - `hello@pumpkinllc.com` (guessed from their Behance domain) and the studio hours
-- Work tiles: real Behance projects, but CSS-illustration art and links to the profile rather than each project (see "Selected work" above)
 - The quote in the "Why Pumpkin" band (written as a brand promise, not a testimonial)
 - "Taking new clients for Q1 2027" pill
 - Social links point to: instagram.com/pumpkin.llc, facebook.com/Pumpkin.groupllc, linkedin.com/company/pumpkin-group-llc, behance.net/PumpkinGroup (these are the real public profiles)
 
 ## Testing done
 
-Selected work pass (2026-10-20), headless Chromium via Playwright, local server, fonts and cdnjs blocked: 1400×900 and 390×844, English and Arabic, light and dark, plus reduced-motion and JavaScript-disabled runs. No console errors and no horizontal overflow in any run. Checked: all six tiles link to the Behance profile in a new tab; Arabic round trip through the language button (tags, Arabic client names, button and heading switch and switch back); every tile's hover state; scene animations are paused while their tile is off screen, running once it is on screen, absent on a touch device and with reduced motion; the static no-JS render shows every scene; the phone swipe hint now displays.
+Covers and links pass (2026-10-20), headless Chromium via Playwright, local server: 1400×1000, 820×1180, 390×844 and 360×740, English and Arabic, light and dark, plus reduced-motion and JavaScript-disabled runs. No console errors and no horizontal overflow in any run. Checked: every tile's `href` is its Behance gallery; all six covers load on desktop, and on the phone carousel the lazy ones load as you swipe; the covers are uncropped in the 3- and 2-column grids and the phone carousel and clear of the caption fade on phones; backdrops show behind each cover; hover lifts the cover; the no-JS and reduced-motion renders show every cover.
+
+Selected work pass (2026-10-20), headless Chromium via Playwright, local server, fonts and cdnjs blocked: 1400×900 and 390×844, English and Arabic, light and dark, plus reduced-motion and JavaScript-disabled runs. No console errors and no horizontal overflow in any run. Checked: all six tiles linked to the Behance profile in a new tab (since replaced by gallery links); Arabic round trip through the language button (tags, Arabic client names, button and heading switch and switch back); every tile's hover state; scene animations (since removed) were paused while their tile was off screen, running once it is on screen, absent on a touch device and with reduced motion; the static no-JS render shows every scene; the phone swipe hint now displays.
 
 Pre-deploy review (2026-10-20): four independent reviewers (JS runtime, cross-browser CSS, RTL/i18n/a11y, mobile performance) over the diff, each finding adversarially re-checked against the code. Ten confirmed, all fixed before merging: hero copy faded while still mid-screen on phones; a double tap on the theme or language button re-applied the same state because the target was computed before the deferred view-transition callback; the marquee loop width was measured before web fonts loaded, so the band snapped at every wrap; the marquee never switched to Arabic (pre-existing); word masks clipped the dots under a final yeh and the italic `y`; tabbing into the scroll-hidden nav scrolled the page; too many simultaneous transitions on phones (word masks, tile drift) and infinite animations ticking while off screen. Three findings were refuted (no `color-mix` fallback in Safari 16.0, read/write interleaving in the scroll handler, paint-layer churn on the quote words).
 
@@ -112,7 +128,6 @@ Rendered in headless Chromium at 1400×900 and 390×844, English and Arabic, lig
 
 ## Ideas not yet done
 
-- Add the real Behance cover image and gallery URL to each work tile (see "Selected work" for the one-line change). Needs a machine that can reach behance.net.
 - Wire the form to a backend
 - Optional: a custom domain in Pages settings
 - Optional: a second Three.js moment on the contact section (keep it paused off-screen like the hero)

@@ -501,15 +501,41 @@ section[id],main[id]{scroll-margin-top:72px}
 .success h3,.success p,.success .btn{animation:fadeUp .6s var(--ease-out) both}
 .success p{animation-delay:.15s}.success .btn{animation-delay:.25s}
 
-/* ---- Cursor ring (desktop, fine pointer): follows with a lag, grows over links, fills over tiles ---- */
-.cursor{position:fixed;left:0;top:0;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:1.5px solid var(--accent);pointer-events:none;z-index:999;display:none;place-items:center;opacity:0;color:var(--accent-ink);transform:translate3d(-100px,-100px,0);transition:opacity .3s,background .3s,border-color .3s;will-change:transform}
-.cursor svg{width:14px;height:14px;opacity:0;transition:opacity .2s}
-@media (hover:hover) and (pointer:fine) and (min-width:900px){.anim .cursor{display:grid}}
+/* ---- Cursor (laptops and desktops: a fine pointer, 900px up) ----
+   Two layers replace the native pointer: an orange dot that sits exactly on the pointer, and a ring that
+   follows on a spring and stretches along its direction of travel. Over buttons, nav links, socials and the
+   budget pills the ring wraps the element (its box and corner radius, tracked while magnetic buttons move);
+   over a work tile it becomes an orange "View" disc, over the hero pumpkin a spinning dashed "Burst" ring, and
+   form fields get the native I-beam back. Moving fast sheds a short trail of pumpkin seeds and a click throws a
+   handful (a canvas that draws only while seeds are alive). html.has-cursor, set on the first mouse move, is
+   what hides the native pointer, so touch, reduced motion, no JS and forced colours all keep it. */
+.cursor,.cursor-dot,.cursor-seeds{display:none}
+@media (hover:hover) and (pointer:fine) and (min-width:900px){
+  .anim .cursor,.anim .cursor-dot,.anim .cursor-seeds{display:block}
+  html.has-cursor,html.has-cursor *{cursor:none}
+  html.has-cursor input,html.has-cursor textarea,html.has-cursor select{cursor:auto}
+}
+@media (forced-colors:active){.anim .cursor,.anim .cursor-dot,.anim .cursor-seeds{display:none}html.has-cursor,html.has-cursor *{cursor:auto}}
+.cursor{position:fixed;left:0;top:0;z-index:1002;width:36px;height:36px;border-radius:18px;border:1.5px solid var(--accent);pointer-events:none;opacity:0;contain:layout style;will-change:transform;transform:translate3d(-100px,-100px,0);transition:opacity .3s,background-color .3s,border-color .3s}
 .cursor.on{opacity:1}
-.cursor.is-link{background:color-mix(in srgb,var(--accent) 18%,transparent);border-color:transparent}
+.cursor.is-link{background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.cursor.is-wrap{background:color-mix(in srgb,var(--accent) 10%,transparent);border-color:color-mix(in srgb,var(--accent) 75%,transparent)}
 .cursor.is-view{background:var(--accent);border-color:var(--accent)}
-.cursor.is-view svg{opacity:1}
+.cursor.is-burst{border-color:transparent;background:color-mix(in srgb,var(--bg) 62%,transparent)}
+.cursor.is-burst::before{content:"";position:absolute;inset:-1.5px;border-radius:inherit;border:1.5px dashed var(--accent);animation:cursorSpin 6s linear infinite}
 .cursor.is-text{opacity:0}
+.cursor-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:5px;color:var(--accent-ink);font:700 12px/1 var(--font-body);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;opacity:0;transition:opacity .2s}
+[dir="rtl"] .cursor-label{font-family:var(--font-body-ar);font-size:13px;letter-spacing:0}
+.cursor-label svg{width:13px;height:13px}
+.cursor.is-view .cursor-label,.cursor.is-burst .cursor-label{opacity:1}
+.cursor.is-burst .cursor-label{color:var(--accent)}
+.cursor.is-burst .cursor-label svg{display:none}
+.cursor-dot{position:fixed;left:0;top:0;z-index:1003;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--accent);pointer-events:none;opacity:0;will-change:transform;transform:translate3d(-100px,-100px,0);transition:opacity .25s}
+.cursor-dot.on{opacity:1}
+.cursor-dot.on.hide{opacity:0}
+.cursor-seeds{position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:1001;pointer-events:none}
+@keyframes cursorSpin{to{rotate:360deg}}
+.hero.pk-over{cursor:pointer}
 
 /* ---- Film grain (desktop): a tiled SVG noise texture stepping through positions ---- */
 .grain{position:fixed;inset:-10%;pointer-events:none;z-index:900;opacity:.07;display:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:220px 220px}
@@ -1015,7 +1041,9 @@ html.sheet-lock,html.sheet-lock body{overflow:hidden}
   </div>
 </div>
 
-<div class="cursor" id="cursor" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor-label"><span id="cursorText"></span><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></div>
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+<canvas class="cursor-seeds" id="cursorSeeds" aria-hidden="true"></canvas>
 <div class="grain" aria-hidden="true"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" id="threeLib" defer></script>
@@ -1406,8 +1434,8 @@ html.sheet-lock,html.sheet-lock body{overflow:hidden}
   links.addEventListener('click',function(e){ if(e.target.tagName==='A'){ navForce=performance.now()+1500; nav.classList.remove('nav-hidden'); } });
 
   /* ---------------- pointer effects (desktop, fine pointer) ----------------
-     Service cards tilt toward the cursor and carry a spotlight (--mx/--my), buttons pull toward the cursor,
-     and a ring cursor follows with a lag, growing over links and filling over work tiles. */
+     Service cards tilt toward the cursor and carry a spotlight (--mx/--my), and buttons pull toward the cursor.
+     The cursor itself has its own section below. */
   if(anim&&fine){
     document.querySelectorAll('.service').forEach(function(card){
       card.addEventListener('pointermove',function(e){ var r=card.getBoundingClientRect(), x=e.clientX-r.left, y=e.clientY-r.top; card.style.setProperty('--mx',x.toFixed(0)+'px'); card.style.setProperty('--my',y.toFixed(0)+'px'); card.style.setProperty('--ry',((x/r.width-.5)*7).toFixed(2)+'deg'); card.style.setProperty('--rx',((.5-y/r.height)*7).toFixed(2)+'deg'); },{passive:true});
@@ -1418,27 +1446,115 @@ html.sheet-lock,html.sheet-lock body{overflow:hidden}
       b.addEventListener('pointermove',function(e){ var r=b.getBoundingClientRect(), dx=e.clientX-(r.left+r.width/2), dy=e.clientY-(r.top+r.height/2); b.style.transform='translate('+(dx*.22).toFixed(1)+'px,'+(dy*.32).toFixed(1)+'px)'; },{passive:true});
       b.addEventListener('pointerleave',function(){ b.style.transform=''; });
     });
-    var cur=document.getElementById('cursor');
-    if(cur&&window.innerWidth>=900){
-      var cx=-100,cy=-100,ctx=-100,cty=-100,cs=1,cts=1,cBase=1,cDown=false,cRaf=0,curOn=false;
-      var cursorFrame=function(){
-        cx+=(ctx-cx)*.2; cy+=(cty-cy)*.2; cs+=(cts-cs)*.2;
-        cur.style.transform='translate3d('+cx.toFixed(1)+'px,'+cy.toFixed(1)+'px,0) scale('+cs.toFixed(3)+')';
-        if(Math.abs(ctx-cx)>.2||Math.abs(cty-cy)>.2||Math.abs(cts-cs)>.005) cRaf=requestAnimationFrame(cursorFrame); else cRaf=0;
-      };
-      var cursorKick=function(){ cts=cBase*(cDown?.8:1); if(!cRaf) cRaf=requestAnimationFrame(cursorFrame); };
-      window.addEventListener('pointermove',function(e){
-        if(e.pointerType&&e.pointerType!=='mouse') return;
-        ctx=e.clientX; cty=e.clientY; if(!curOn){ curOn=true; cur.classList.add('on'); }
-        var t=e.target, tile=t.closest?t.closest('.tile'):null, text=t.closest?t.closest('input,textarea,select'):null, link=t.closest?t.closest('a,button,label,[role="button"]'):null;
-        cur.classList.toggle('is-view',!!tile); cur.classList.toggle('is-link',!!link&&!tile); cur.classList.toggle('is-text',!!text);
-        cBase=tile?2.3:link?1.55:1; cursorKick();
-      },{passive:true});
-      window.addEventListener('pointerdown',function(){ cDown=true; cursorKick(); },{passive:true});
-      window.addEventListener('pointerup',function(){ cDown=false; cursorKick(); },{passive:true});
-      document.addEventListener('mouseleave',function(){ curOn=false; cur.classList.remove('on'); });
-      document.addEventListener('mouseenter',function(){ curOn=true; cur.classList.add('on'); });
-    }
+  }
+
+  /* ---------------- cursor (fine pointer; shown from 900px up) ----------------
+     The dot is placed on every mouse move; the ring runs on a spring in its own rAF loop that stops once it has
+     caught up. pick() reads the element under the pointer (again on scroll, when the page moves under a still
+     mouse) and sets the mode: '' ring, 'link' a bigger filled ring, 'wrap' around an element, 'view' a disc over
+     a work tile, 'burst' over the hero pumpkin, 'text' over form fields (native I-beam). Fast moves shed seeds
+     and a press throws a ring of them; they live on a canvas that only draws while some are in the air. */
+  var cur=document.getElementById('cursor'), curDot=document.getElementById('cursorDot'), curText=document.getElementById('cursorText'), seedCv=document.getElementById('cursorSeeds');
+  if(anim&&fine&&cur&&curDot&&seedCv&&seedCv.getContext){
+    var heroEl=document.getElementById('hero');
+    var CUR_WRAP='.btn,.icon-btn,.nav-links a,.copy,.socials a,.budget label,.logo';
+    var CUR_LABEL={en:{view:'View',burst:'Burst'},ar:{view:'عرض',burst:'انقر'}};
+    var mx=-100,my=-100,rx=-100,ry=-100,rw=36,rh=36,rr=18,cvx=0,cvy=0,lastMoveT=0,lastFrameT=0;
+    var curMode=null,wrapEl=null,wrapR=0,wrapPad=6,curDown=false,curOn=false,curRaf=0,curScrollTick=false;
+    var setCurMode=function(m,el){
+      var w=m==='wrap'?el:null;
+      if(w&&w!==wrapEl){ var navish=w.matches('.nav-links a,.logo'); wrapPad=navish?9:5; wrapR=parseFloat(getComputedStyle(w).borderTopLeftRadius)||(navish?8:0); }
+      wrapEl=w;
+      if(m===curMode) return;
+      curMode=m;
+      ['link','wrap','view','burst','text'].forEach(function(k){ cur.classList.toggle('is-'+k,m===k); });
+      curDot.classList.toggle('hide',m!==''&&m!=='link');
+      if(m==='view'||m==='burst') curText.textContent=CUR_LABEL[lang][m];
+    };
+    var pick=function(el){
+      if(!el||!el.closest){ setCurMode('',null); return; }
+      if(el.closest('input,textarea,select')){ setCurMode('text',null); return; }
+      if(el.closest('.tile')){ setCurMode('view',null); return; }
+      if(heroEl&&heroEl.classList.contains('pk-over')&&el.closest('#hero')&&!el.closest('a,button')){ setCurMode('burst',null); return; }
+      var w=el.closest(CUR_WRAP); if(w){ setCurMode('wrap',w); return; }
+      setCurMode(el.closest('a,button,label,[role="button"]')?'link':'',null);
+    };
+    var curFrame=function(now){
+      curRaf=0;
+      var f=lastFrameT?Math.min(3,(now-lastFrameT)/16.667):1; lastFrameT=now;
+      var kp=1-Math.pow(.8,f), ks=1-Math.pow(.78,f), tx=mx, ty=my, tw, th, tr, stretch=0, ang=0;
+      if(curMode==='wrap'&&wrapEl&&wrapEl.isConnected){
+        /* wrap the element (magnetic buttons move, so its box is read every frame), drifting a little toward the pointer */
+        var b=wrapEl.getBoundingClientRect(), bx=b.left+b.width/2, by=b.top+b.height/2;
+        tw=b.width+wrapPad*2; th=b.height+wrapPad*2; tr=Math.min(wrapR+wrapPad,th/2);
+        tx=bx+(mx-bx)*.08; ty=by+(my-by)*.08;
+      } else {
+        var size=curMode==='view'?92:curMode==='burst'?86:curMode==='link'?52:36;
+        tw=th=size*(curDown?.8:1); tr=tw/2;
+      }
+      rx+=(tx-rx)*kp; ry+=(ty-ry)*kp; rw+=(tw-rw)*ks; rh+=(th-rh)*ks; rr+=(tr-rr)*ks;
+      var sp=Math.sqrt(cvx*cvx+cvy*cvy);   /* px per frame; decays while the mouse rests */
+      if(curMode===''||curMode==='link'){ stretch=Math.min(.42,sp*.014); ang=Math.atan2(cvy,cvx); }
+      cvx*=Math.pow(.82,f); cvy*=Math.pow(.82,f);
+      cur.style.width=rw.toFixed(1)+'px'; cur.style.height=rh.toFixed(1)+'px'; cur.style.borderRadius=rr.toFixed(1)+'px';
+      cur.style.transform='translate3d('+(rx-rw/2).toFixed(1)+'px,'+(ry-rh/2).toFixed(1)+'px,0) rotate('+ang.toFixed(3)+'rad) scale('+(1+stretch).toFixed(3)+','+(1-stretch*.45).toFixed(3)+')';
+      if(Math.abs(tx-rx)>.15||Math.abs(ty-ry)>.15||Math.abs(tw-rw)>.15||Math.abs(th-rh)>.15||Math.abs(tr-rr)>.15||sp>.05) curRaf=requestAnimationFrame(curFrame); else lastFrameT=0;
+    };
+    var curKick=function(){ if(!curRaf) curRaf=requestAnimationFrame(curFrame); };
+    var placeDot=function(){ curDot.style.transform='translate3d('+mx+'px,'+my+'px,0)'+(curDown?' scale(1.8)':''); };
+
+    /* pumpkin seeds: cream on dark, orange on light; each one an oval that tumbles, falls and fades */
+    var sctx=seedCv.getContext('2d'), seeds=[], seedRaf=0, seedLastT=0, lastSeedT=0, sdpr=1, seedCols=[];
+    var sizeSeeds=function(){ sdpr=Math.min(window.devicePixelRatio||1,1.5); seedCv.width=Math.round(window.innerWidth*sdpr); seedCv.height=Math.round(window.innerHeight*sdpr); };
+    var colorSeeds=function(){ seedCols=isLight()?[cssColor('--accent'),cssColor('--accent-2'),'#d9822b']:['#f6ead2','#f6ead2','#e8d3a8',cssColor('--accent-2')]; };
+    var seedFrame=function(now){
+      seedRaf=0;
+      var dt=seedLastT?Math.min(40,now-seedLastT):16, W=window.innerWidth, H=window.innerHeight; seedLastT=now;
+      sctx.setTransform(sdpr,0,0,sdpr,0,0); sctx.clearRect(0,0,W,H);
+      for(var i=seeds.length-1;i>=0;i--){
+        var p=seeds[i]; p.t+=dt;
+        if(p.t>=p.life){ seeds.splice(i,1); continue; }
+        p.vy+=.0009*dt; p.vx*=Math.pow(.996,dt); p.x+=p.vx*dt; p.y+=p.vy*dt; p.a+=p.va*dt/16;
+        sctx.globalAlpha=Math.min(1,(1-p.t/p.life)*1.6)*.95;
+        sctx.save(); sctx.translate(p.x,p.y); sctx.rotate(p.a);
+        sctx.beginPath(); sctx.ellipse(0,0,p.s*.62,p.s,0,0,Math.PI*2); sctx.fillStyle=p.c; sctx.fill();
+        sctx.lineWidth=.8; sctx.strokeStyle='rgba(90,45,10,.28)'; sctx.stroke();
+        sctx.restore();
+      }
+      sctx.globalAlpha=1;
+      if(seeds.length&&tabVisible) seedRaf=requestAnimationFrame(seedFrame); else { seeds.length=0; seedLastT=0; sctx.clearRect(0,0,W,H); }
+    };
+    var addSeed=function(x,y,vx,vy,life){
+      if(seeds.length>=64) seeds.shift();
+      seeds.push({x:x,y:y,vx:vx,vy:vy,a:Math.atan2(vy,vx)+Math.PI/2,va:(Math.random()-.5)*.12,t:0,life:life,s:3.3+Math.random()*1.7,c:seedCols[(Math.random()*seedCols.length)|0]});
+      if(!seedRaf){ seedLastT=0; seedRaf=requestAnimationFrame(seedFrame); }
+    };
+    var trail=function(svx,svy,now){   /* pointer speed in px/ms: only fast moves shed seeds, at most one every 26ms */
+      if(Math.sqrt(svx*svx+svy*svy)<.55||now-lastSeedT<26) return; lastSeedT=now;
+      addSeed(mx-svx*6,my-svy*6,-svx*.06+(Math.random()-.5)*.08,-svy*.06+(Math.random()-.5)*.08-.03,600+Math.random()*350);
+    };
+    var burstSeeds=function(){ for(var i=0;i<12;i++){ var a=i/12*Math.PI*2+Math.random()*.4, v=.14+Math.random()*.2; addSeed(mx,my,Math.cos(a)*v,Math.sin(a)*v-.08,650+Math.random()*400); } };
+    sizeSeeds(); colorSeeds();
+    window.addEventListener('resize',sizeSeeds,{passive:true});
+    new MutationObserver(colorSeeds).observe(root,{attributes:true,attributeFilter:['data-theme']});
+    try{ window.matchMedia('(prefers-color-scheme: light)').addEventListener('change',colorSeeds); }catch(e){}
+
+    window.addEventListener('pointermove',function(e){
+      if(e.pointerType!=='mouse') return;
+      var now=performance.now(), dt=Math.max(1,now-(lastMoveT||now-16)), dx=e.clientX-mx, dy=e.clientY-my;
+      if(!curOn){ curOn=true; rx=e.clientX; ry=e.clientY; dx=dy=0; cur.classList.add('on'); curDot.classList.add('on'); root.classList.add('has-cursor'); }
+      cvx=cvx*.5+dx/dt*8.33; cvy=cvy*.5+dy/dt*8.33; lastMoveT=now;   /* blended px/frame */
+      mx=e.clientX; my=e.clientY; placeDot(); pick(e.target);
+      if(curMode!=='text') trail(dx/dt,dy/dt,now);
+      curKick();
+    },{passive:true});
+    window.addEventListener('pointerdown',function(e){ if(e.pointerType!=='mouse') return; curDown=true; placeDot(); if(curMode!=='text') burstSeeds(); curKick(); },{passive:true});
+    window.addEventListener('pointerup',function(e){ if(e.pointerType!=='mouse') return; curDown=false; placeDot(); curKick(); },{passive:true});
+    root.addEventListener('mouseleave',function(){ curOn=false; cur.classList.remove('on'); curDot.classList.remove('on'); });
+    window.addEventListener('scroll',function(){
+      if(!curOn||curScrollTick) return; curScrollTick=true;
+      requestAnimationFrame(function(){ curScrollTick=false; pick(document.elementFromPoint(mx,my)); curKick(); });
+    },{passive:true});
   }
 
   /* ---------------- phone work carousel ----------------
@@ -1625,8 +1741,9 @@ html.sheet-lock,html.sheet-lock body{overflow:hidden}
     function aim(clientX,clientY){ var r=hero.getBoundingClientRect(); px=((clientX-r.left)/Math.max(1,W))*2-1; py=-(((clientY-r.top)/Math.max(1,H))*2-1); }
     function onPumpkin(clientX,clientY){ var r=hero.getBoundingClientRect(), dx=clientX-r.left-pk.x, dy=clientY-r.top-pk.y; return dx*dx+dy*dy<pk.r*pk.r*1.2; }
     if(anim&&fine&&!phone){
-      hero.addEventListener('pointermove',function(e){ aim(e.clientX,e.clientY); pointerIn=true; hero.style.cursor=heroScroll<0.3&&onPumpkin(e.clientX,e.clientY)?'pointer':''; },{passive:true});
-      hero.addEventListener('pointerleave',function(){ pointerIn=false; });
+      /* .pk-over: the native pointer turns to a hand over the pumpkin, the custom cursor to its "Burst" ring */
+      hero.addEventListener('pointermove',function(e){ aim(e.clientX,e.clientY); pointerIn=true; hero.classList.toggle('pk-over',heroScroll<0.3&&onPumpkin(e.clientX,e.clientY)); },{passive:true});
+      hero.addEventListener('pointerleave',function(){ pointerIn=false; hero.classList.remove('pk-over'); });
     }
     /* burst: every point gets a kick away from the tap ray and out from the centre, strongest near the tap;
        kick/kvel are a damped spring per point (see frame) */
